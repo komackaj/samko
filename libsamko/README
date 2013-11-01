@@ -1,0 +1,5 @@
+This is core library for SAMKO (System for Automated Measurement of Kinetic Objects).
+It is aimed to be multiplatform and GUI independent, although most of GUI bussiness logic is implemented here in form of abstract classes. For GUI interfaces see associated projects (e.g. samko-qt)
+
+Dependencies:
+  - OpenCV (www.opencv.org) - for various computer vision tasks including digital image processing
