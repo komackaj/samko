@@ -1,0 +1,108 @@
+#include <gtest/gtest.h>
+
+#include <libsamko/calib2d/calibprojective.h>
+#include <opencv2/highgui/highgui.hpp>
+
+// Grid calibration - may be allowed after InputParameters test succeedes
+
+#undef GENERATE_GRIDS
+
+constexpr int IMAGE_WIDTH = 640;
+constexpr int IMAGE_HEIGHT = 480;
+constexpr int GRID_COLS = 10;
+constexpr int GRID_ROWS = 7;
+constexpr int SPACING_MM = 10;
+constexpr int SPACING_PIXELS = 60;	///< important for generating only
+constexpr int RADIUS = 15;			///< important for generating only
+
+using namespace samko;
+using namespace cv;
+
+TEST(CalibProjective2DTest, InputParameters) {
+	ASSERT_LE(RADIUS, SPACING_PIXELS);
+	ASSERT_GE(IMAGE_WIDTH, GRID_COLS*SPACING_PIXELS + RADIUS );
+	ASSERT_GE(IMAGE_HEIGHT, GRID_ROWS*SPACING_PIXELS + RADIUS );
+}
+
+Mat generatePreciseField() {
+	Size imSize(IMAGE_WIDTH, IMAGE_HEIGHT);
+	Mat image(imSize, CV_8U, Scalar(255) );
+	Size targetSize(RADIUS, RADIUS);
+	Scalar targetColor(0);
+
+	for (int iRow = 1; iRow < GRID_ROWS+1; iRow++)
+		for (int iCol = 1; iCol < GRID_COLS+1; iCol++) {
+			Point pt(iCol * SPACING_PIXELS, iRow * SPACING_PIXELS);
+			ellipse(image, pt, targetSize , 0., 360., 0., targetColor);
+			floodFill(image, pt, targetColor );
+		}
+    return image;
+}
+
+TEST(CalibProjective2DTest, PreciseGridCompute) {
+	CalibrationProjective2D calib(SPACING_MM, 2);
+
+	Mat image = generatePreciseField();
+	calib.compute(image, GRID_COLS, GRID_ROWS);
+
+	vector<Point2f> imgcrds = calib.getGridImageCoords();
+	EXPECT_EQ(GRID_COLS*GRID_ROWS, imgcrds.size());
+	EXPECT_LT(imgcrds.front().x, imgcrds.back().x);
+	EXPECT_LT(imgcrds.front().y, imgcrds.back().y);
+
+	Point2f meanError = calib.getMeanReprojectionError();
+	EXPECT_NEAR(meanError.x, 0.0, 2e-6);
+	EXPECT_NEAR(meanError.y, 0.0, 2e-6);
+/*
+	Mat resImage = calib.getResidualsImage();
+	imshow("Residuals", resImage);
+	waitKey();
+*/
+}
+
+TEST(CalibProjective2DTest, PreciseGridTransform) {
+    CalibrationProjective2D calib(SPACING_MM, 2);
+
+	Mat image = generatePreciseField();
+	calib.compute(image, GRID_COLS, GRID_ROWS);
+
+    Point2f pt (SPACING_PIXELS, SPACING_PIXELS);
+    pt = calib.imageToGrid(pt);
+    ASSERT_NEAR( pt.x, 0.f, 6e-3);  // grid LCS starts at 0,0
+    ASSERT_NEAR( pt.y, 0.f, 6e-3);
+
+    pt = calib.gridToImage(pt);
+    ASSERT_NEAR( pt.x, SPACING_PIXELS, 2e-5);
+    ASSERT_NEAR( pt.y, SPACING_PIXELS, 2e-5);
+}
+
+TEST(CalibProjective2DTest, PreciseGridTransformCorners) {
+    CalibrationProjective2D calib(SPACING_MM, 2);
+
+	Mat image = generatePreciseField();
+	calib.compute(image, GRID_COLS, GRID_ROWS);
+
+    const size_t PT_COUNT = 4;
+    vector<Point2f> img(PT_COUNT), grid(PT_COUNT);
+    img[0] = Point2f(SPACING_PIXELS, SPACING_PIXELS);
+    img[1] = Point2f(SPACING_PIXELS * GRID_COLS, SPACING_PIXELS);
+    img[2] = Point2f(SPACING_PIXELS, SPACING_PIXELS * GRID_ROWS);
+    img[3] = Point2f(SPACING_PIXELS * GRID_COLS, SPACING_PIXELS * GRID_ROWS);
+
+    grid[0] = Point2f(0.f, 0.f);
+    grid[1] = Point2f(SPACING_MM * (GRID_COLS-1), 0.f);
+    grid[2] = Point2f(0.f, SPACING_MM * (GRID_ROWS-1));
+    grid[3] = Point2f(SPACING_MM * (GRID_COLS-1), SPACING_MM * (GRID_ROWS-1));
+
+    auto tmp = calib.imageToGrid(img);
+    for (size_t i = 0; i < PT_COUNT; ++i) {
+        ASSERT_NEAR( tmp[i].x, grid[i].x, 9e-3);  // grid LCS starts at 0,0
+        ASSERT_NEAR( tmp[i].y, grid[i].y, 9e-3);
+    }
+
+    tmp = calib.gridToImage(tmp);
+    for (size_t i = 0; i < PT_COUNT; ++i) {
+        ASSERT_NEAR( tmp[i].x, img[i].x, 2e-5);  // grid LCS starts at 0,0
+        ASSERT_NEAR( tmp[i].y, img[i].y, 2e-5);
+    }
+}
