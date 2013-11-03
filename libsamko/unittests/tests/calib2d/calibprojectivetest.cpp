@@ -106,3 +106,9 @@ TEST(CalibProjective2DTest, PreciseGridTransformCorners) {
     for (size_t i = 0; i < PT_COUNT; ++i)
         ExpectPoints2fNear(tmp[i], img[i], 2e-5);
 }
+
+TEST(CalibProjective2DTest, UserInputRequired) {
+    CalibrationProjective2D calib(SPACING_MM, 2);
+	Mat image = imread("data/calib010.png");
+	calib.compute(image, GRID_COLS, GRID_ROWS);
+}
