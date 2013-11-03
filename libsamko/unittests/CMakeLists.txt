@@ -1,6 +1,6 @@
-# build gtest with same compiler options as tested library
-add_subdirectory(gtest)
-link_directories (${SAMKO_BINARY_DIR}/libsamko/unittests/gtest)
+# build gtest and google mock with same compiler options as tested library
+add_subdirectory(gmock)
+link_directories (${SAMKO_BINARY_DIR}/libsamko/unittests/gmock)
 
 add_subdirectory(data)
 
@@ -13,4 +13,6 @@ SET(test_SOURCES
    )
 
 add_executable(samko_unittest main.cpp ${test_SOURCES})
-target_link_libraries(samko_unittest gtest samko)
+target_link_libraries(samko_unittest gmock samko)
+
+install(TARGETS samko_unittest DESTINATION bin)

@@ -18,3 +18,5 @@ target_link_libraries(samko
   )
 
 add_subdirectory (unittests)
+
+install(TARGETS samko DESTINATION bin)
