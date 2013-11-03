@@ -18,10 +18,11 @@ constexpr int RADIUS = 15;			///< important for generating only
 using namespace samko;
 using namespace cv;
 
-TEST(CalibProjective2DTest, InputParameters) {
-	ASSERT_LE(RADIUS, SPACING_PIXELS);
-	ASSERT_GE(IMAGE_WIDTH, GRID_COLS*SPACING_PIXELS + RADIUS );
-	ASSERT_GE(IMAGE_HEIGHT, GRID_ROWS*SPACING_PIXELS + RADIUS );
+/* HELPER METHODS */
+
+void ExpectPoints2fNear(const Point2f& pt1, const Point2f& pt2, float eps) {
+    EXPECT_NEAR(pt1.x, pt2.x, eps);
+	EXPECT_NEAR(pt1.y, pt2.y, eps);
 }
 
 Mat generatePreciseField() {
@@ -39,6 +40,14 @@ Mat generatePreciseField() {
     return image;
 }
 
+/* TEST CASES */
+
+TEST(CalibProjective2DTest, InputParameters) {
+	ASSERT_LE(RADIUS, SPACING_PIXELS);
+	ASSERT_GE(IMAGE_WIDTH, GRID_COLS*SPACING_PIXELS + RADIUS );
+	ASSERT_GE(IMAGE_HEIGHT, GRID_ROWS*SPACING_PIXELS + RADIUS );
+}
+
 TEST(CalibProjective2DTest, PreciseGridCompute) {
 	CalibrationProjective2D calib(SPACING_MM, 2);
 
@@ -51,13 +60,10 @@ TEST(CalibProjective2DTest, PreciseGridCompute) {
 	EXPECT_LT(imgcrds.front().y, imgcrds.back().y);
 
 	Point2f meanError = calib.getMeanReprojectionError();
-	EXPECT_NEAR(meanError.x, 0.0, 2e-6);
-	EXPECT_NEAR(meanError.y, 0.0, 2e-6);
-/*
-	Mat resImage = calib.getResidualsImage();
-	imshow("Residuals", resImage);
-	waitKey();
-*/
+	ExpectPoints2fNear(meanError, Point2f(0.f, 0.f), 2e-6);
+
+    //imshow("Residuals", calib.getResidualsImage());
+	//waitKey();
 }
 
 TEST(CalibProjective2DTest, PreciseGridTransform) {
@@ -66,14 +72,12 @@ TEST(CalibProjective2DTest, PreciseGridTransform) {
 	Mat image = generatePreciseField();
 	calib.compute(image, GRID_COLS, GRID_ROWS);
 
-    Point2f pt (SPACING_PIXELS, SPACING_PIXELS);
-    pt = calib.imageToGrid(pt);
-    ASSERT_NEAR( pt.x, 0.f, 6e-3);  // grid LCS starts at 0,0
-    ASSERT_NEAR( pt.y, 0.f, 6e-3);
+    Point2f ptStart (SPACING_PIXELS, SPACING_PIXELS);
+    Point2f pt = calib.imageToGrid(ptStart);
+    ExpectPoints2fNear(pt, Point2f(0.f, 0.f), 6e-3);  // grid LCS starts at 0,0
 
     pt = calib.gridToImage(pt);
-    ASSERT_NEAR( pt.x, SPACING_PIXELS, 2e-5);
-    ASSERT_NEAR( pt.y, SPACING_PIXELS, 2e-5);
+    ExpectPoints2fNear(pt, ptStart, 2e-5);
 }
 
 TEST(CalibProjective2DTest, PreciseGridTransformCorners) {
@@ -95,14 +99,10 @@ TEST(CalibProjective2DTest, PreciseGridTransformCorners) {
     grid[3] = Point2f(SPACING_MM * (GRID_COLS-1), SPACING_MM * (GRID_ROWS-1));
 
     auto tmp = calib.imageToGrid(img);
-    for (size_t i = 0; i < PT_COUNT; ++i) {
-        ASSERT_NEAR( tmp[i].x, grid[i].x, 9e-3);  // grid LCS starts at 0,0
-        ASSERT_NEAR( tmp[i].y, grid[i].y, 9e-3);
-    }
+    for (size_t i = 0; i < PT_COUNT; ++i)
+        ExpectPoints2fNear(tmp[i], grid[i], 9e-3);  // grid LCS starts at 0,0
 
     tmp = calib.gridToImage(tmp);
-    for (size_t i = 0; i < PT_COUNT; ++i) {
-        ASSERT_NEAR( tmp[i].x, img[i].x, 2e-5);  // grid LCS starts at 0,0
-        ASSERT_NEAR( tmp[i].y, img[i].y, 2e-5);
-    }
+    for (size_t i = 0; i < PT_COUNT; ++i)
+        ExpectPoints2fNear(tmp[i], img[i], 2e-5);
 }

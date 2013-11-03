@@ -11,7 +11,7 @@ class CvUtils {
 
 public:
 
-	static float PointDist(const cv::Point2f p1, const cv::Point2f p2);
+	static float PointDist(const cv::Point2f &p1, const cv::Point2f &p2);
 };
 
 } //namespace samko
