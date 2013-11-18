@@ -1,8 +1,9 @@
 # build gtest and google mock with same compiler options as tested library
 add_subdirectory(gmock)
+include_directories ("${PROJECT_SOURCE_DIR}/libsamko/unittests/gmock/include")
 link_directories (${SAMKO_BINARY_DIR}/libsamko/unittests/gmock)
 
-include_directories (".")
+include_directories ("${PROJECT_SOURCE_DIR}/libsamko/unittests")
 
 SET(calib2d_test_SOURCES
 	tests/calib2d/calibprojectivetest.cpp
