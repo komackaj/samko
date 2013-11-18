@@ -3,6 +3,9 @@
 #include <libsamko/calib2d/calibprojective.h>
 #include <opencv2/highgui/highgui.hpp>
 
+#include <mocks/ui/mockuifactory.h>
+#include <mocks/ui/mockuigriddetector.h>
+
 // Grid calibration - may be allowed after InputParameters test succeedes
 
 #undef GENERATE_GRIDS
@@ -10,13 +13,16 @@
 constexpr int IMAGE_WIDTH = 640;
 constexpr int IMAGE_HEIGHT = 480;
 constexpr int GRID_COLS = 10;
-constexpr int GRID_ROWS = 7;
+constexpr int GRID_ROWS = 6;
 constexpr int SPACING_MM = 10;
 constexpr int SPACING_PIXELS = 60;	///< important for generating only
 constexpr int RADIUS = 15;			///< important for generating only
 
 using namespace samko;
 using namespace cv;
+
+using ::testing::Return;
+using ::testing::StrictMock;
 
 /* HELPER METHODS */
 
@@ -109,6 +115,20 @@ TEST(CalibProjective2DTest, PreciseGridTransformCorners) {
 
 TEST(CalibProjective2DTest, UserInputRequired) {
     CalibrationProjective2D calib(SPACING_MM, 2);
+
+    vector<Point2f> mockData{{ Point2f(50.f, 64.f), Point2f(596.f, 50.f), Point2f(62.f, 360.f) }};
+
+    StrictMock<MockUIFactory> strictFactory;
+    EXPECT_CALL(strictFactory, getGridDetectorProxy())
+        .WillOnce(Return(strictFactory.mockDetector(GRID_COLS, GRID_ROWS, mockData)));
+
 	Mat image = imread("data/calib010.png");
-	calib.compute(image, GRID_COLS, GRID_ROWS);
+	calib.compute(image, GRID_COLS, GRID_ROWS, &strictFactory);
+
+    Point2f imgPt(177.f, 242.f),
+            expectedGridPt(2*SPACING_MM, 3*SPACING_MM),
+            gridPt = calib.imageToGrid(imgPt);
+
+    ExpectPoints2fNear(gridPt, expectedGridPt, 0.6f);
+    ExpectPoints2fNear(calib.gridToImage(gridPt), imgPt, 0.6f);
 }

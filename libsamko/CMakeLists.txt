@@ -7,8 +7,13 @@ set (calibration2d_SOURCES
 	src/calib2d/calibprojective.cpp
     )
 
+set (ui_SOURCES
+	src/ui/uigriddetector.cpp
+    )
+
 SET (SOURCES 
 	${calibration2d_SOURCES}
+	${ui_SOURCES}
 	src/cvutils.cpp
     )
 

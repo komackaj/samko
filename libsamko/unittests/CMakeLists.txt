@@ -2,6 +2,8 @@
 add_subdirectory(gmock)
 link_directories (${SAMKO_BINARY_DIR}/libsamko/unittests/gmock)
 
+include_directories (".")
+
 SET(calib2d_test_SOURCES
 	tests/calib2d/calibprojectivetest.cpp
    )

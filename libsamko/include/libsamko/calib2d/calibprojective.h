@@ -7,6 +7,8 @@
 
 namespace samko {
 
+class UIFactory;
+
 /// Computing 2D projective transformation from image coordinates to calibration grid local coordinate system (LCS)
 /// @todo implement user input of grid corners (@see detectGrid)
 /// @todo implement target refining
@@ -24,7 +26,7 @@ public:
 	/** computes 2D projective transformation from calibration grid image
 	 *  throws std::runtime_error on failure
 	 *	@returns true on success, false on failure */
-	void compute(cv::Mat image, const unsigned short colCount, const unsigned short rowCount);
+	void compute(cv::Mat image, unsigned int colCount, unsigned int rowCount, const UIFactory *factory = nullptr);
 
 	/** transforms image point to grid coordinate system
 	 *	@pre compute method succeeded
@@ -95,7 +97,7 @@ private:
 	/// initializes GridCoords and ImageCoords members
 	///	@returns false on failure
 	/// @todo  implement user input if automated detection fails
-	void detectGrid(cv::Mat image, const unsigned short colCount, const unsigned short rowCount);
+	void detectGrid(cv::Mat image, unsigned intcolCount, unsigned int rowCount, const UIFactory* factory = nullptr);
 
     /// Generates residuals image
     /// @returns residual image

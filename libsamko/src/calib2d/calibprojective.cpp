@@ -1,11 +1,12 @@
 #include <libsamko/calib2d/calibprojective.h>
 
 #include <limits>
-#include <iostream>
 #include <stdexcept>
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
+#include <libsamko/ui/uifactory.h>
+#include <libsamko/ui/uigriddetector.h>
 
 #include <libsamko/cvutils.h>
 
@@ -20,15 +21,24 @@ CalibrationProjective2D::CalibrationProjective2D(float gridCentersDist, double r
 	, MeanReprojError(-1.0f, -1.0f)
 {}
 
-void CalibrationProjective2D::detectGrid(Mat image, const unsigned short colCount, const unsigned short rowCount) {
+void CalibrationProjective2D::detectGrid(Mat image, unsigned int colCount, unsigned int rowCount, const UIFactory *factory) {
 	GridSize = Size(colCount, rowCount);
 
 	GridCoords = generateGridCoords(GridSize, GridCentersDist);
+	const size_t expectedSize = colCount*rowCount;
 
 	if ( !findCirclesGrid( image, GridSize, ImageCoords, CALIB_CB_SYMMETRIC_GRID + CALIB_CB_CLUSTERING) ||
-		  ImageCoords.size() != size_t(colCount*rowCount) )	{
-        //TODO - use user input
-		throw std::runtime_error("CalibrationProjective2D::detectGrid failed");
+		  ImageCoords.size() != expectedSize )	{
+
+        if (factory){
+            auto gridDetector = factory->getGridDetector();
+            if(gridDetector)
+                ImageCoords = gridDetector->getGrid(colCount, rowCount);
+            else
+                throw std::runtime_error("CalibrationProjective2D::detectGrid - given factory does not support GridDetector");
+        }else{
+            throw std::runtime_error("CalibrationProjective2D::detectGrid failed");
+        }
 	}
 
 	/// may be returned from bottomright to topleft, so check and reverse
@@ -38,9 +48,9 @@ void CalibrationProjective2D::detectGrid(Mat image, const unsigned short colCoun
 		std::reverse(ImageCoords.begin(), ImageCoords.end());
 }
 
-void CalibrationProjective2D::compute(Mat image, const unsigned short colCount, const unsigned short rowCount) {
+void CalibrationProjective2D::compute(Mat image, unsigned int colCount, unsigned int rowCount, const UIFactory *factory) {
 	/// init grid / image coordinates of calibration grid
-	detectGrid(image, colCount, rowCount);
+	detectGrid(image, colCount, rowCount, factory);
 
 	/// homogenize
 	HomogImage.compute(ImageCoords);
@@ -136,7 +146,10 @@ cv::Mat CalibrationProjective2D::buildResidualsImage(Mat srcImage, vector<uchar>
 	const float MIN_ERR = 1.f / SCALE;
 
     Mat ret(srcImage.size(), CV_8UC3);
-    cvtColor(srcImage, ret, CV_GRAY2RGB);
+    if (srcImage.channels() == 1)
+        cvtColor(srcImage, ret, CV_GRAY2RGB);
+    else
+        ret = srcImage.clone();
 
     size_t id = 0;
 	for (const Point2f &pt : ImageCoords)
