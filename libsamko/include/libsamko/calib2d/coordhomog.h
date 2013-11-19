@@ -5,6 +5,8 @@
 #include <vector>
 #include <opencv2/core/core.hpp>
 
+#include <libsamko/serialization/serializable.h>
+
 namespace samko {
 
 /** Computing scale factor for homogenization from vector using std::accumulate
@@ -20,7 +22,7 @@ public:
 
 
 /// Coordinates homogenization - after transform will have mean point value (0,0) and dist from mean will be sqrt(2)
-class CoordHomogenization {
+class CoordHomogenization : public Serializable {
 
 public:
 	CoordHomogenization(void);
@@ -46,6 +48,10 @@ public:
 
 	///	Unhomogenization of whole vector
 	std::vector<cv::Point2f> unhomogenize(const std::vector<cv::Point2f>& pts) const;
+
+/// (de)serialization
+    virtual void readFrom(Reader *reader);
+    virtual void writeTo(Writer *writer) const;
 
 private:
 

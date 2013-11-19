@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
 #include <libsamko/calib2d/calibprojective.h>
+#include <libsamko/serialization/memstorage.h>
+
 #include <opencv2/highgui/highgui.hpp>
 
 #include <mocks/ui/mockuifactory.h>
@@ -44,6 +46,28 @@ Mat generatePreciseField() {
 			floodFill(image, pt, targetColor );
 		}
     return image;
+}
+
+void testPreciseGrid(CalibrationProjective2D calib) {
+    const size_t PT_COUNT = 4;
+    vector<Point2f> img(PT_COUNT), grid(PT_COUNT);
+    img[0] = Point2f(SPACING_PIXELS, SPACING_PIXELS);
+    img[1] = Point2f(SPACING_PIXELS * GRID_COLS, SPACING_PIXELS);
+    img[2] = Point2f(SPACING_PIXELS, SPACING_PIXELS * GRID_ROWS);
+    img[3] = Point2f(SPACING_PIXELS * GRID_COLS, SPACING_PIXELS * GRID_ROWS);
+
+    grid[0] = Point2f(0.f, 0.f);
+    grid[1] = Point2f(SPACING_MM * (GRID_COLS-1), 0.f);
+    grid[2] = Point2f(0.f, SPACING_MM * (GRID_ROWS-1));
+    grid[3] = Point2f(SPACING_MM * (GRID_COLS-1), SPACING_MM * (GRID_ROWS-1));
+
+    auto tmp = calib.imageToGrid(img);
+    for (size_t i = 0; i < PT_COUNT; ++i)
+        ExpectPoints2fNear(tmp[i], grid[i], 9e-3);  // grid LCS starts at 0,0
+
+    tmp = calib.gridToImage(tmp);
+    for (size_t i = 0; i < PT_COUNT; ++i)
+        ExpectPoints2fNear(tmp[i], img[i], 2e-5);
 }
 
 /* TEST CASES */
@@ -92,25 +116,7 @@ TEST(CalibProjective2DTest, PreciseGridTransformCorners) {
 	Mat image = generatePreciseField();
 	calib.compute(image, GRID_COLS, GRID_ROWS);
 
-    const size_t PT_COUNT = 4;
-    vector<Point2f> img(PT_COUNT), grid(PT_COUNT);
-    img[0] = Point2f(SPACING_PIXELS, SPACING_PIXELS);
-    img[1] = Point2f(SPACING_PIXELS * GRID_COLS, SPACING_PIXELS);
-    img[2] = Point2f(SPACING_PIXELS, SPACING_PIXELS * GRID_ROWS);
-    img[3] = Point2f(SPACING_PIXELS * GRID_COLS, SPACING_PIXELS * GRID_ROWS);
-
-    grid[0] = Point2f(0.f, 0.f);
-    grid[1] = Point2f(SPACING_MM * (GRID_COLS-1), 0.f);
-    grid[2] = Point2f(0.f, SPACING_MM * (GRID_ROWS-1));
-    grid[3] = Point2f(SPACING_MM * (GRID_COLS-1), SPACING_MM * (GRID_ROWS-1));
-
-    auto tmp = calib.imageToGrid(img);
-    for (size_t i = 0; i < PT_COUNT; ++i)
-        ExpectPoints2fNear(tmp[i], grid[i], 9e-3);  // grid LCS starts at 0,0
-
-    tmp = calib.gridToImage(tmp);
-    for (size_t i = 0; i < PT_COUNT; ++i)
-        ExpectPoints2fNear(tmp[i], img[i], 2e-5);
+    testPreciseGrid(calib);
 }
 
 TEST(CalibProjective2DTest, UserInputRequired) {
@@ -131,4 +137,19 @@ TEST(CalibProjective2DTest, UserInputRequired) {
 
     ExpectPoints2fNear(gridPt, expectedGridPt, 0.6f);
     ExpectPoints2fNear(calib.gridToImage(gridPt), imgPt, 0.6f);
+}
+
+TEST(CalibProjective2DTest, Serialization) {
+    // generate object
+    CalibrationProjective2D calib(SPACING_MM, 2);
+	Mat image = generatePreciseField();
+	calib.compute(image, GRID_COLS, GRID_ROWS);
+    // serialize it
+    samko::MemStorage storage;
+    calib.writeTo(&storage);
+    // deserialize it
+    CalibrationProjective2D deserialized(0, 0);
+    deserialized.readFrom(&storage);
+    // test
+    testPreciseGrid(deserialized);
 }

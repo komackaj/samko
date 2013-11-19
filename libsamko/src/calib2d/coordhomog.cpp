@@ -68,4 +68,16 @@ float CoordHomogenization::distToMean(Point2f pt) {
 	return CvUtils::PointDist(pt, Mean);
 }
 
+void CoordHomogenization::readFrom(Reader *reader) {
+    Mean.x = reader->readFloat("meanX");
+    Mean.y = reader->readFloat("meanY");
+    Scale = reader->readFloat("scale");
+}
+
+void CoordHomogenization::writeTo(Writer *writer) const {
+    writer->writeFloat("meanX", Mean.x);
+    writer->writeFloat("meanY", Mean.y);
+    writer->writeFloat("scale", Scale);
+}
+
 } //namespace samko
