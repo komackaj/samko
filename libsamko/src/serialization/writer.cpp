@@ -3,10 +3,10 @@
 
 namespace samko {
 
-void Writer::writeObject(const std::string& name, const Serializable *obj){
+void Writer::writeObject(const std::string& name, const Serializable& obj){
     std::string scope = getObjPrefix();
     setObjPrefix(getPrefixedName(name));
-    obj->writeTo(this);
+    obj.writeTo(*this);
     setObjPrefix(scope);
 }
 

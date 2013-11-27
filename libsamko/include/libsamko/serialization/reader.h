@@ -11,7 +11,7 @@ class Serializable;
 /// Abstract interface for object deserialization
 class Reader : public Serializer {
 public:
-    void readObject(const std::string& name, Serializable* obj);
+    void readObject(const std::string& name, Serializable& obj);
 
     std::string readString(const std::string& name);
     int readInt(const std::string& name);

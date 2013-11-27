@@ -50,8 +50,8 @@ public:
 	std::vector<cv::Point2f> unhomogenize(const std::vector<cv::Point2f>& pts) const;
 
 /// (de)serialization
-    virtual void readFrom(Reader *reader);
-    virtual void writeTo(Writer *writer) const;
+    virtual void readFrom(Reader& reader);
+    virtual void writeTo(Writer& writer) const;
 
 private:
 

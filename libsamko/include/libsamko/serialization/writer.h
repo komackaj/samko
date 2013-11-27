@@ -12,7 +12,7 @@ class Serializable;
  *  When serializing objects with same attribute names, you should use object prefix */
 class Writer : public Serializer {
 public:
-    void writeObject(const std::string& name, const Serializable *obj);
+    void writeObject(const std::string& name, const Serializable& obj);
 
     void writeString(const std::string& name, const std::string& val);
     void writeInt(const std::string& name, int val);

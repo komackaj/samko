@@ -3,11 +3,10 @@
 
 namespace samko {
 
-void Reader::readObject(const std::string& name, Serializable* obj){
-    assert(obj);
+void Reader::readObject(const std::string& name, Serializable& obj){
     std::string scope = getObjPrefix();
     setObjPrefix(getPrefixedName(name));
-    obj->readFrom(this);
+    obj.readFrom(*this);
     setObjPrefix(scope);
 }
 

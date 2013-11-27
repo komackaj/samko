@@ -168,17 +168,17 @@ cv::Mat CalibrationProjective2D::buildResidualsImage(Mat srcImage, vector<uchar>
 	return ret;
 }
 
-void CalibrationProjective2D::readFrom(Reader *reader) {
-    reader->readMat("H", H);
+void CalibrationProjective2D::readFrom(Reader& reader) {
+    reader.readMat("H", H);
     HInv = H.inv();
-    reader->readObject("HomogImage", &HomogImage);
-    reader->readObject("HomogGrid", &HomogGrid);
+    reader.readObject("HomogImage", HomogImage);
+    reader.readObject("HomogGrid", HomogGrid);
 }
 
-void CalibrationProjective2D::writeTo(Writer *writer) const {
-    writer->writeMat("H", H);
-    writer->writeObject("HomogImage", &HomogImage);
-    writer->writeObject("HomogGrid", &HomogGrid);
+void CalibrationProjective2D::writeTo(Writer& writer) const {
+    writer.writeMat("H", H);
+    writer.writeObject("HomogImage", HomogImage);
+    writer.writeObject("HomogGrid", HomogGrid);
 }
 
 } // namespace samko

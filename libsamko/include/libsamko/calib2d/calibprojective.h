@@ -70,8 +70,8 @@ public:
 	cv::Mat	getResidualsImage() const;
 
 /// (de)serialization
-    virtual void readFrom(Reader *reader);
-    virtual void writeTo(Writer *writer) const;
+    virtual void readFrom(Reader& reader);
+    virtual void writeTo(Writer& writer) const;
 
 private:
 
