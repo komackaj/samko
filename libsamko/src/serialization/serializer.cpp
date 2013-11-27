@@ -13,7 +13,7 @@ void Serializer::setObjPrefix(const string& prefix) {
 }
 
 string Serializer::getPrefixedName(const string& name) {
-    return ObjPrefix + ":" + name;
+    return ObjPrefix.empty() ? name : ObjPrefix + "/" + name;
 }
 
 } //namespace samko
