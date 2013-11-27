@@ -1,6 +1,14 @@
 #include <libsamko/serialization/writer.h>
+#include <libsamko/serialization/serializable.h>
 
 namespace samko {
+
+void Writer::writeObject(const std::string& name, const Serializable *obj){
+    std::string scope = getObjPrefix();
+    setObjPrefix(getPrefixedName(name));
+    obj->writeTo(this);
+    setObjPrefix(scope);
+}
 
 void Writer::writeString(const std::string& name, const std::string& val){
     _writeString(getPrefixedName(name), val);

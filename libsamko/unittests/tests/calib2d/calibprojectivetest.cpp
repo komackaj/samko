@@ -146,10 +146,10 @@ TEST(CalibProjective2DTest, Serialization) {
 	calib.compute(image, GRID_COLS, GRID_ROWS);
     // serialize it
     samko::MemStorage storage;
-    calib.writeTo(&storage);
+    storage.writeObject("Calib2d", &calib);
     // deserialize it
     CalibrationProjective2D deserialized(0, 0);
-    deserialized.readFrom(&storage);
+    storage.readObject("Calib2d", &deserialized);
     // test
     testPreciseGrid(deserialized);
 }

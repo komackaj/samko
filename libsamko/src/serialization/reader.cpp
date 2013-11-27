@@ -1,6 +1,15 @@
 #include <libsamko/serialization/reader.h>
+#include <libsamko/serialization/serializable.h>
 
 namespace samko {
+
+void Reader::readObject(const std::string& name, Serializable* obj){
+    assert(obj);
+    std::string scope = getObjPrefix();
+    setObjPrefix(getPrefixedName(name));
+    obj->readFrom(this);
+    setObjPrefix(scope);
+}
 
 std::string Reader::readString(const std::string& name) {
     return _readString(getPrefixedName(name));

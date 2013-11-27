@@ -8,6 +8,7 @@ namespace samko {
 
 /// Abstract serializable object
 class Serializable {
+public:
     virtual void readFrom(Reader *reader) = 0;
     virtual void writeTo(Writer*reader) const = 0;
 };
