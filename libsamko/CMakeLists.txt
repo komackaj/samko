@@ -1,4 +1,6 @@
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package( OpenCV REQUIRED )
+find_package( Jansson REQUIRED )
 
 include_directories ("${PROJECT_SOURCE_DIR}/libsamko/include")
 

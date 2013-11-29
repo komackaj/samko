@@ -3,3 +3,4 @@ It is aimed to be multiplatform and GUI independent, although most of GUI bussin
 
 Dependencies:
   - OpenCV (www.opencv.org) - for various computer vision tasks including digital image processing, minimum version 2.3.3 (lower - especially 2.3.1 - needn't work properly, run samko_unittest to verify)
+  - Jansson (http://www.digip.org/jansson/) - for JSON (de)serialization
