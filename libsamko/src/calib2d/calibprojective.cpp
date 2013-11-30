@@ -176,9 +176,9 @@ void CalibrationProjective2D::readFrom(Reader& reader) {
 }
 
 void CalibrationProjective2D::writeTo(Writer& writer) const {
-    writer.writeMat("H", H);
-    writer.writeObject("HomogImage", HomogImage);
-    writer.writeObject("HomogGrid", HomogGrid);
+    writer.write("H", H);
+    writer.write("HomogImage", HomogImage);
+    writer.write("HomogGrid", HomogGrid);
 }
 
 } // namespace samko

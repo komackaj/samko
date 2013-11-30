@@ -25,10 +25,10 @@ protected:
     virtual float _readFloat(const std::string& name);
     virtual double _readDouble(const std::string& name);
 
-    virtual void _writeString(const std::string& name, const std::string& val);
-    virtual void _writeInt(const std::string& name, int val);
-    virtual void _writeFloat(const std::string& name, float val);
-    virtual void _writeDouble(const std::string& name, double val);
+    virtual void writeString(const std::string& name, const std::string& val);
+    virtual void writeInt(const std::string& name, int val);
+    virtual void writeFloat(const std::string& name, float val);
+    virtual void writeDouble(const std::string& name, double val);
 
 private:
     std::map<std::string, std::string>   strMap;

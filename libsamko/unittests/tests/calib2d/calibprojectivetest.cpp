@@ -83,7 +83,7 @@ CalibrationProjective2D initPrecise() {
 void testSerializers(Reader& reader, Writer& writer) {
     auto calib = initPrecise();
     // serialize it
-    writer.writeObject("Calib2d", calib);
+    writer.write("Calib2d", calib);
     std::string data = writer.data();
     // deserialize it
     CalibrationProjective2D deserialized(0, 0);

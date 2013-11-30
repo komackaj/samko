@@ -17,10 +17,10 @@ public:
     virtual std::string data() const;
 
 protected:
-    virtual void _writeString(const std::string& name, const std::string& val);
-    virtual void _writeInt(const std::string& name, int val);
-    virtual void _writeFloat(const std::string& name, float val);
-    virtual void _writeDouble(const std::string& name, double val);
+    virtual void writeString(const std::string& name, const std::string& val);
+    virtual void writeInt(const std::string& name, int val);
+    virtual void writeFloat(const std::string& name, float val);
+    virtual void writeDouble(const std::string& name, double val);
 
     virtual void onBeforeObjPrefixChange(std::string name, std::string oldPrefix);
 

@@ -16,23 +16,23 @@ public:
      *  @param autoPrefix   send prefixed names to _read* methods */
     Writer(bool autoPrefix = true);
 
-    void writeObject(const std::string& name, const Serializable& obj);
+    void write(const std::string& name, const Serializable& obj);
 
-    void writeString(const std::string& name, const std::string& val);
-    void writeInt(const std::string& name, int val);
-    void writeFloat(const std::string& name, float val);
-    void writeDouble(const std::string& name, double val);
+    void write(const std::string& name, const std::string& val);
+    void write(const std::string& name, int val);
+    void write(const std::string& name, float val);
+    void write(const std::string& name, double val);
 
-    void writeMat(const std::string& name, const cv::Mat& mat);
+    void write(const std::string& name, const cv::Mat& mat);
 
     /// Get current data
     virtual std::string data() const = 0;
 
 protected:
-    virtual void _writeString(const std::string& name, const std::string& val) = 0;
-    virtual void _writeInt(const std::string& name, int val) = 0;
-    virtual void _writeFloat(const std::string& name, float val) = 0;
-    virtual void _writeDouble(const std::string& name, double val) = 0;
+    virtual void writeString(const std::string& name, const std::string& val) = 0;
+    virtual void writeInt(const std::string& name, int val) = 0;
+    virtual void writeFloat(const std::string& name, float val) = 0;
+    virtual void writeDouble(const std::string& name, double val) = 0;
 };
 
 } // namespace samko

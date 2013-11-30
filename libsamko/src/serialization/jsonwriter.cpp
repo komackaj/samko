@@ -55,25 +55,25 @@ void JsonWriter::onBeforeObjPrefixChange(std::string name, std::string oldPrefix
     }
 }
 
-void JsonWriter::_writeString(const string& name, const string& val){
+void JsonWriter::writeString(const string& name, const string& val){
     json_t *current = getCurrentObject();
     json_object_set_new(current, name.c_str(), json_string(val.c_str()));
     print( string("Added string '" + name + "', %s\n").c_str(), Data.get());
 }
 
-void JsonWriter::_writeInt(const string& name, int val){
+void JsonWriter::writeInt(const string& name, int val){
     json_t *current = getCurrentObject();
     json_object_set_new(current, name.c_str(), json_integer(val));
     print( string("Added int '" + name + "', %s\n").c_str(), Data.get());
 }
 
-void JsonWriter::_writeFloat(const string& name, float val){
+void JsonWriter::writeFloat(const string& name, float val){
     json_t *current = getCurrentObject();
     json_object_set_new(current, name.c_str(), json_real(val));
     print( string("Added float '" + name + "', %s\n").c_str(), Data.get());
 }
 
-void JsonWriter::_writeDouble(const string& name, double val){
+void JsonWriter::writeDouble(const string& name, double val){
     json_t *current = getCurrentObject();
     json_object_set_new(current, name.c_str(), json_real(val));
     print( string("Added double '" + name + "', %s\n").c_str(), Data.get());

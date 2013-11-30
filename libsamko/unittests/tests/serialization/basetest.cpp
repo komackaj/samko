@@ -17,7 +17,7 @@ void TestReaderWriter(Reader& reader, Writer& writer) {
     EXPECT_CALL(storeMock, defineData())
         .WillOnce(Return(testData));
 
-    writer.writeObject("testData", storeMock);
+    writer.write("testData", storeMock);
     std::string data = writer.data();
     reader.parse(data);
     reader.readObject("testData", loadedMock);

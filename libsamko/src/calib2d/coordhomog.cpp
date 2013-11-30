@@ -75,9 +75,9 @@ void CoordHomogenization::readFrom(Reader& reader) {
 }
 
 void CoordHomogenization::writeTo(Writer& writer) const {
-    writer.writeFloat("meanX", Mean.x);
-    writer.writeFloat("meanY", Mean.y);
-    writer.writeFloat("scale", Scale);
+    writer.write("meanX", Mean.x);
+    writer.write("meanY", Mean.y);
+    writer.write("scale", Scale);
 }
 
 } //namespace samko

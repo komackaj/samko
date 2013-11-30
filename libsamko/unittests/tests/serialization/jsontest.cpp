@@ -42,12 +42,12 @@ TEST(JsonTest, SimpleWrite) {
         .WillOnce(Return(testData.second));
 
     JsonWriter writer;
-    writer.writeObject("simple", mock);
+    writer.write("simple", mock);
     jsonStringEquals(writer.data(), testData.first);
 }
 
 TEST(JsonTest, SimpleRead) {
-auto testData = getTestData();
+    auto testData = getTestData();
     JsonReader reader;
     StrictMock<MockSerializable> mock;
 

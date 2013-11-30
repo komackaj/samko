@@ -24,10 +24,10 @@ public:
 
     virtual void writeTo(samko::Writer& writer) const {
         Data d = defineData();
-        writer.writeString("string", d.str);
-        writer.writeInt("int", d.i);
-        writer.writeFloat("float", d.f);
-        writer.writeDouble("dbl", d.d);
+        writer.write("string", d.str);
+        writer.write("int", d.i);
+        writer.write("float", d.f);
+        writer.write("dbl", d.d);
     };
 
     MOCK_CONST_METHOD0(defineData, Data(void));

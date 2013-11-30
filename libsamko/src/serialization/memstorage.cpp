@@ -38,22 +38,22 @@ string MemStorage::data() const {
     return string();
 }
 
-void MemStorage::_writeString(const std::string& name, const std::string& val){
+void MemStorage::writeString(const std::string& name, const std::string& val){
     //printf("Writing string %s, value %s\n", name.c_str(), val.c_str());
     strMap.insert(make_pair(name, val));
 }
 
-void MemStorage::_writeInt(const std::string& name, int val){
+void MemStorage::writeInt(const std::string& name, int val){
     //printf("Writing int %s, value %d\n", name.c_str(), val);
     intMap.insert(make_pair(name, val));
 }
 
-void MemStorage::_writeFloat(const std::string& name, float val){
+void MemStorage::writeFloat(const std::string& name, float val){
     //printf("Writing float %s, value %f\n", name.c_str(), val);
     floatMap.insert(make_pair(name, val));
 }
 
-void MemStorage::_writeDouble(const std::string& name, double val){
+void MemStorage::writeDouble(const std::string& name, double val){
     //printf("Writing double %s, value %lf\n", name.c_str(), val);
     doubleMap.insert(make_pair(name, val));
 }

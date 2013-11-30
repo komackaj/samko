@@ -6,37 +6,37 @@ namespace samko {
 Writer::Writer(bool autoPrefix) : Serializer(autoPrefix) {
 }
 
-void Writer::writeObject(const std::string& name, const Serializable& obj){
+void Writer::write(const std::string& name, const Serializable& obj){
     std::string scope = getObjPrefix();
     setObjPrefix(getPrefixedName(name));
     obj.writeTo(*this);
     setObjPrefix(scope);
 }
 
-void Writer::writeString(const std::string& name, const std::string& val){
-    _writeString(autoprefixName(name), val);
+void Writer::write(const std::string& name, const std::string& val){
+    writeString(autoprefixName(name), val);
 }
 
-void Writer::writeInt(const std::string& name, int val) {
-    _writeInt(autoprefixName(name), val);
+void Writer::write(const std::string& name, int val) {
+    writeInt(autoprefixName(name), val);
 }
 
-void Writer::writeFloat(const std::string& name, float val) {
-    _writeFloat(autoprefixName(name), val);
+void Writer::write(const std::string& name, float val) {
+    writeFloat(autoprefixName(name), val);
 }
 
-void Writer::writeDouble(const std::string& name, double val) {
-    _writeDouble(autoprefixName(name), val);
+void Writer::write(const std::string& name, double val) {
+    writeDouble(autoprefixName(name), val);
 }
 
-void Writer::writeMat(const std::string& name, const cv::Mat& mat) {
-    writeInt(name + "-type", mat.type());
-    writeInt(name + "-cols", mat.cols);
-    writeInt(name + "-rows", mat.rows);
+void Writer::write(const std::string& name, const cv::Mat& mat) {
+    write(name + "-type", mat.type());
+    write(name + "-cols", mat.cols);
+    write(name + "-rows", mat.rows);
     const double *data = mat.ptr<double>();
     int elems = mat.size().area();
     for (int i = 0; i < elems; ++i, ++data)
-         writeDouble(name + std::to_string(i), *data);
+         write(name + std::to_string(i), *data);
 }
 
 } //namespace samko
