@@ -85,6 +85,7 @@ void testSerializers(Reader& reader, Writer& writer) {
     // serialize it
     writer.write("Calib2d", calib);
     std::string data = writer.data();
+    //printf("Data: %s", data.c_str());
     // deserialize it
     CalibrationProjective2D deserialized(0, 0);
     reader.parse(data);

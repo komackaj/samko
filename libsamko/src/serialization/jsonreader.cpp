@@ -1,5 +1,4 @@
 #include <libsamko/serialization/jsonreader.h>
-#include <jansson.h>
 #include <stdexcept>
 #include <libsamko/stringutils.h>
 
@@ -17,7 +16,7 @@ void JsonReader::parse(const string& data) {
     if (!parsed) {
         stringstream ss;
         ss << "JsonReader::parse failed on line " << error.line << " column " << error.column;
-        ss << "with message " << error.text;
+        ss << " with message " << error.text;
         throw std::runtime_error(ss.str());
     }
     _root = makeJsonPtr(parsed);
@@ -63,6 +62,18 @@ double JsonReader::_readDouble(const string& name){
     if (!json_is_real(val))
         throwBadType(name, "real");
     return json_real_value(val);
+}
+
+vector<string> JsonReader::_readStringArray(const string& name){
+    return readArray<string>(name, [](json_t* val) {return json_string_value(val);} );
+}
+
+vector<int> JsonReader::_readIntArray(const string& name){
+    return readArray<int>(name, [](json_t* val) {return json_integer_value(val);} );
+}
+
+vector<double> JsonReader::_readDoubleArray(const string& name){
+    return readArray<double>(name, [](json_t* val) {return json_real_value(val);} );
 }
 
 } //namespace samko

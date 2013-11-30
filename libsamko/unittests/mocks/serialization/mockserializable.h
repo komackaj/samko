@@ -11,6 +11,9 @@ public:
         std::string str;
         int      i;
         double   d;
+        std::vector<std::string>   vecStr;
+        std::vector<int>            vecInt;
+        std::vector<double>         vecDbl;
     };
 
     virtual void readFrom(samko::Reader& reader) {
@@ -18,6 +21,9 @@ public:
         _data.str = reader.readString("string");
         _data.i = reader.readInt("int");
         _data.d = reader.readDouble("dbl");
+        _data.vecStr = reader.readStringArray("vecStr");
+        _data.vecInt = reader.readIntArray("vecInt");
+        _data.vecDbl = reader.readDoubleArray("vecDbl");
     }
 
     virtual void writeTo(samko::Writer& writer) const {
@@ -25,6 +31,9 @@ public:
         writer.write("string", d.str);
         writer.write("int", d.i);
         writer.write("dbl", d.d);
+        writer.write("vecStr", d.vecStr);
+        writer.write("vecInt", d.vecInt);
+        writer.write("vecDbl", d.vecDbl);
     };
 
     MOCK_CONST_METHOD0(defineData, Data(void));

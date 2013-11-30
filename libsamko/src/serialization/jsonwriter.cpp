@@ -1,6 +1,5 @@
 #include <libsamko/serialization/jsonwriter.h>
 #include <stdexcept>
-#include <jansson.h>
 #include <libsamko/stringutils.h>
 
 using namespace std;
@@ -26,7 +25,7 @@ json_t *JsonWriter::getCurrentObject() const {
         //printf("Reading object %s\n", name.c_str());
         current = json_object_get(current, name.c_str());
         if (!current)
-            throw std::logic_error("JsonWriter: json_object_get failed");
+            throw logic_error("JsonWriter: json_object_get failed");
     }
     return current;
 }
@@ -39,10 +38,10 @@ string JsonWriter::data() const {
     return ret;
 }
 
-void JsonWriter::onBeforeObjPrefixChange(std::string name, std::string oldPrefix){
+void JsonWriter::onBeforeObjPrefixChange(std::string name,string oldPrefix){
     //printf("Change, name '%s', old '%s'\n", name.c_str(), oldPrefix.c_str());
     if (oldPrefix.find(name) == string::npos){  // level down
-        std::string relName(name);
+        string relName(name);
         if (!oldPrefix.empty())
             relName.erase(0, oldPrefix.size() + getPrefixSeparator().size());
         const char *key = relName.c_str();
@@ -71,6 +70,27 @@ void JsonWriter::writeDouble(const string& name, double val){
     json_t *current = getCurrentObject();
     json_object_set_new(current, name.c_str(), json_real(val));
     print( string("Added double '" + name + "', %s\n").c_str(), Data.get());
+}
+
+void JsonWriter::writeStringArray(const string& name, const vector<string>& vals){
+    json_t *current = getCurrentObject(),
+           *a = buildArray<string>(vals, [](const string& str){return json_string(str.c_str());});
+    json_object_set_new(current, name.c_str(), a);
+    print( string("Added string array '" + name + "', %s\n").c_str(), Data.get());
+}
+
+void JsonWriter::writeIntArray(const string& name, const vector<int>& vals){
+    json_t *current = getCurrentObject(),
+           *a = buildArray<int>(vals, [](int val){return json_integer(val);});
+    json_object_set_new(current, name.c_str(), a);
+    print( string("Added int array '" + name + "', %s\n").c_str(), Data.get());
+}
+
+void JsonWriter::writeDoubleArray(const string& name, const vector<double>& vals){
+    json_t *current = getCurrentObject(),
+           *a = buildArray<double>(vals, [](double val){return json_real(val);});
+    json_object_set_new(current, name.c_str(), a);
+    print( string("Added int array '" + name + "', %s\n").c_str(), Data.get());
 }
 
 } //namespace samko

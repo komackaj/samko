@@ -13,6 +13,8 @@ void Writer::write(const std::string& name, const Serializable& obj){
     setObjPrefix(scope);
 }
 
+/* simple types */
+
 void Writer::write(const std::string& name, const std::string& val){
     writeString(autoprefixName(name), val);
 }
@@ -24,6 +26,22 @@ void Writer::write(const std::string& name, int val) {
 void Writer::write(const std::string& name, double val) {
     writeDouble(autoprefixName(name), val);
 }
+
+/* arrays */
+
+void Writer::write(const std::string& name, const std::vector<std::string>& vals) {
+    writeStringArray(autoprefixName(name), vals);
+}
+
+void Writer::write(const std::string& name, const std::vector<int>& vals) {
+    writeIntArray(autoprefixName(name), vals);
+}
+
+void Writer::write(const std::string& name, const std::vector<double>& vals) {
+    writeDoubleArray(autoprefixName(name), vals);
+}
+
+/* common objects */
 
 void Writer::write(const std::string& name, const cv::Mat& mat) {
     write(name + "-type", mat.type());

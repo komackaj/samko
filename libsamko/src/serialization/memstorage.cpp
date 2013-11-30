@@ -27,6 +27,18 @@ double MemStorage::_readDouble(const std::string& name){
     return doubleMap[name];
 }
 
+vector<string> MemStorage::_readStringArray(const string& name){
+    return strVecMap[name];
+}
+
+vector<int> MemStorage::_readIntArray(const string& name){
+    return intVecMap[name];
+}
+
+vector<double> MemStorage::_readDoubleArray(const string& name){
+    return doubleVecMap[name];
+}
+
 /* writing */
 
 string MemStorage::data() const {
@@ -46,6 +58,18 @@ void MemStorage::writeInt(const std::string& name, int val){
 void MemStorage::writeDouble(const std::string& name, double val){
     //printf("Writing double %s, value %lf\n", name.c_str(), val);
     doubleMap.insert(make_pair(name, val));
+}
+
+void MemStorage::writeStringArray(const std::string& name, const std::vector<std::string>& vals){
+    strVecMap.insert(make_pair(name, vals));
+}
+
+void MemStorage::writeIntArray(const std::string& name, const std::vector<int>& vals){
+    intVecMap.insert(make_pair(name, vals));
+}
+
+void MemStorage::writeDoubleArray(const std::string& name, const std::vector<double>& vals){
+    doubleVecMap.insert(make_pair(name, vals));
 }
 
 } //namespace samko

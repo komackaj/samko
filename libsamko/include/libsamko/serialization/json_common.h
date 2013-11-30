@@ -2,8 +2,7 @@
 #define SAMKO_JSON_COMMON_H_INCLUDED
 
 #include <memory>
-
-class json_t;
+#include <jansson.h>
 
 namespace samko {
 ///unique_ptr with custom deleter (free)
