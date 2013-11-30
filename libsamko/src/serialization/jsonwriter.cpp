@@ -67,12 +67,6 @@ void JsonWriter::writeInt(const string& name, int val){
     print( string("Added int '" + name + "', %s\n").c_str(), Data.get());
 }
 
-void JsonWriter::writeFloat(const string& name, float val){
-    json_t *current = getCurrentObject();
-    json_object_set_new(current, name.c_str(), json_real(val));
-    print( string("Added float '" + name + "', %s\n").c_str(), Data.get());
-}
-
 void JsonWriter::writeDouble(const string& name, double val){
     json_t *current = getCurrentObject();
     json_object_set_new(current, name.c_str(), json_real(val));

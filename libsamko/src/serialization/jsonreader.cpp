@@ -58,10 +58,6 @@ int JsonReader::_readInt(const string& name){
     return json_integer_value(val);
 }
 
-float JsonReader::_readFloat(const string& name){
-    return _readDouble(name);
-}
-
 double JsonReader::_readDouble(const string& name){
     auto val = json_object_get(getCurrentObject(), name.c_str());
     if (!json_is_real(val))

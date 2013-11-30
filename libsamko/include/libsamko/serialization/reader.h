@@ -33,10 +33,6 @@ public:
      *  @pre  successful call to parse */
     int readInt(const std::string& name);
 
-    /** reads float from parsed data
-     *  @pre  successful call to parse */
-    float readFloat(const std::string& name);
-
     /** reads double from parsed data
      *  @pre  successful call to parse */
     double readDouble(const std::string& name);
@@ -48,7 +44,6 @@ public:
 protected:
     virtual std::string _readString(const std::string& name) = 0;
     virtual int _readInt(const std::string& name) = 0;
-    virtual float _readFloat(const std::string& name) = 0;
     virtual double _readDouble(const std::string& name) = 0;
 };
 

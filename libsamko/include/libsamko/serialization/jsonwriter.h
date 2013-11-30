@@ -19,7 +19,6 @@ public:
 protected:
     virtual void writeString(const std::string& name, const std::string& val);
     virtual void writeInt(const std::string& name, int val);
-    virtual void writeFloat(const std::string& name, float val);
     virtual void writeDouble(const std::string& name, double val);
 
     virtual void onBeforeObjPrefixChange(std::string name, std::string oldPrefix);

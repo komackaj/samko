@@ -11,7 +11,7 @@ using ::testing::StrictMock;
 using ::testing::Return;
 
 void TestReaderWriter(Reader& reader, Writer& writer) {
-    MockSerializable::Data testData = {"samko", 27, 5.3, 2.12f};
+    MockSerializable::Data testData = {"samko", 27, 5.3};
 
     StrictMock<MockSerializable> storeMock, loadedMock;
     EXPECT_CALL(storeMock, defineData())

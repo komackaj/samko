@@ -11,14 +11,12 @@ public:
         std::string str;
         int      i;
         double   d;
-        float    f;
     };
 
     virtual void readFrom(samko::Reader& reader) {
         Data d;
         _data.str = reader.readString("string");
         _data.i = reader.readInt("int");
-        _data.f = reader.readFloat("float");
         _data.d = reader.readDouble("dbl");
     }
 
@@ -26,7 +24,6 @@ public:
         Data d = defineData();
         writer.write("string", d.str);
         writer.write("int", d.i);
-        writer.write("float", d.f);
         writer.write("dbl", d.d);
     };
 

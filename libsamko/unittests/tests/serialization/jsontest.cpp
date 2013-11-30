@@ -10,13 +10,12 @@ using ::testing::Return;
 /* HELPERS */
 
 std::pair<string, MockSerializable::Data> getTestData() {
-    MockSerializable::Data data1 = {"jsontest", 15, 7.5, 1500.1f};
+    MockSerializable::Data data1 = {"jsontest", 15, 7.5};
 
     const string expected1 = "{ \
         \"simple\": { \
             \"string\": \"jsontest\", \
             \"int\": 15, \
-            \"float\": 1500.0999755859375, \
             \"dbl\": 7.5 \
         } \
     }";

@@ -22,11 +22,6 @@ int MemStorage::_readInt(const std::string& name){
     return intMap[name];
 }
 
-float MemStorage::_readFloat(const std::string& name){
-    //printf("Reading float %s, value %f\n", name.c_str(), floatMap[name]);
-    return floatMap[name];
-}
-
 double MemStorage::_readDouble(const std::string& name){
     //printf("Reading double %s, value %lf\n", name.c_str(), doubleMap[name]);
     return doubleMap[name];
@@ -46,11 +41,6 @@ void MemStorage::writeString(const std::string& name, const std::string& val){
 void MemStorage::writeInt(const std::string& name, int val){
     //printf("Writing int %s, value %d\n", name.c_str(), val);
     intMap.insert(make_pair(name, val));
-}
-
-void MemStorage::writeFloat(const std::string& name, float val){
-    //printf("Writing float %s, value %f\n", name.c_str(), val);
-    floatMap.insert(make_pair(name, val));
 }
 
 void MemStorage::writeDouble(const std::string& name, double val){

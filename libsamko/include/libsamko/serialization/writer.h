@@ -20,7 +20,6 @@ public:
 
     void write(const std::string& name, const std::string& val);
     void write(const std::string& name, int val);
-    void write(const std::string& name, float val);
     void write(const std::string& name, double val);
 
     void write(const std::string& name, const cv::Mat& mat);
@@ -31,7 +30,6 @@ public:
 protected:
     virtual void writeString(const std::string& name, const std::string& val) = 0;
     virtual void writeInt(const std::string& name, int val) = 0;
-    virtual void writeFloat(const std::string& name, float val) = 0;
     virtual void writeDouble(const std::string& name, double val) = 0;
 };
 

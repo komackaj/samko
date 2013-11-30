@@ -21,10 +21,6 @@ void Writer::write(const std::string& name, int val) {
     writeInt(autoprefixName(name), val);
 }
 
-void Writer::write(const std::string& name, float val) {
-    writeFloat(autoprefixName(name), val);
-}
-
 void Writer::write(const std::string& name, double val) {
     writeDouble(autoprefixName(name), val);
 }

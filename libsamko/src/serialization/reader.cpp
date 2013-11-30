@@ -21,10 +21,6 @@ int Reader::readInt(const std::string& name) {
     return _readInt(autoprefixName(name));
 }
 
-float Reader::readFloat(const std::string& name) {
-    return _readFloat(autoprefixName(name));
-}
-
 double Reader::readDouble(const std::string& name) {
     return _readDouble(autoprefixName(name));
 }

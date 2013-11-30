@@ -69,9 +69,9 @@ float CoordHomogenization::distToMean(Point2f pt) {
 }
 
 void CoordHomogenization::readFrom(Reader& reader) {
-    Mean.x = reader.readFloat("meanX");
-    Mean.y = reader.readFloat("meanY");
-    Scale = reader.readFloat("scale");
+    Mean.x = reader.readDouble("meanX");
+    Mean.y = reader.readDouble("meanY");
+    Scale = reader.readDouble("scale");
 }
 
 void CoordHomogenization::writeTo(Writer& writer) const {

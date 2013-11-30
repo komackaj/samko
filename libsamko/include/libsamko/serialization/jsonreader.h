@@ -18,7 +18,6 @@ public:
 protected:
     virtual std::string _readString(const std::string& name);
     virtual int _readInt(const std::string& name);
-    virtual float _readFloat(const std::string& name);
     virtual double _readDouble(const std::string& name);
 
 private:
