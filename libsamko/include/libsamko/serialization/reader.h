@@ -11,13 +11,34 @@ class Serializable;
 /// Abstract interface for object deserialization
 class Reader : public Serializer {
 public:
+
+    /// parse data from string
+    /// @warning must be called previous to read* method
+    /// @throws std::runtime error on failure
+    virtual void parse(const std::string& data) = 0;
+
+    /** reads Serializable from parsed data
+     *  @pre  successful call to parse */
     void readObject(const std::string& name, Serializable& obj);
 
+    /** reads std::string from parsed data
+     *  @pre  successful call to parse */
     std::string readString(const std::string& name);
+
+    /** reads int from parsed data
+     *  @pre  successful call to parse */
     int readInt(const std::string& name);
+
+    /** reads float from parsed data
+     *  @pre  successful call to parse */
     float readFloat(const std::string& name);
+
+    /** reads double from parsed data
+     *  @pre  successful call to parse */
     double readDouble(const std::string& name);
 
+    /** reads cv::Mat from parsed data
+     *  @pre  successful call to parse */
     void readMat(const std::string name, cv::Mat& mat);
 
 protected:

@@ -17,6 +17,8 @@ void TestReaderWriter(samko::Reader& reader, samko::Writer& writer) {
         .WillOnce(Return(testData));
 
     writer.writeObject("testData", storeMock);
+    std::string data = writer.data();
+    reader.parse(data);
     reader.readObject("testData", loadedMock);
     MockSerializable::Data endData = loadedMock.getReadData();
 

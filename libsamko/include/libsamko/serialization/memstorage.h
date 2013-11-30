@@ -13,6 +13,11 @@ class MemStorage: public Reader, public Writer {
 public:
 
     MemStorage();
+    virtual void parse(const std::string& data);
+
+    ///@warning not implemented
+    ///@returns empty data
+    virtual std::string data() const;
 
 protected:
     virtual std::string _readString(const std::string& name);

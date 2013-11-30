@@ -4,7 +4,7 @@ using namespace std;
 
 namespace samko {
 
-const string& Serializer::getObjPrefix() {
+const string& Serializer::getObjPrefix() const {
     return ObjPrefix;
 }
 

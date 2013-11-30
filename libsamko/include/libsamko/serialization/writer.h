@@ -21,6 +21,9 @@ public:
 
     void writeMat(const std::string& name, const cv::Mat& mat);
 
+    /// Get current data
+    virtual std::string data() const = 0;
+
 protected:
     virtual void _writeString(const std::string& name, const std::string& val) = 0;
     virtual void _writeInt(const std::string& name, int val) = 0;

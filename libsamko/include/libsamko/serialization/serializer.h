@@ -12,7 +12,7 @@ class Serializer {
 public:
     /// ObjPrefix member getter
     /// @see ObjPrefix
-    const std::string& getObjPrefix();
+    const std::string& getObjPrefix() const;
 
     /// ObjPrefix member setter
     /// @see ObjPrefix

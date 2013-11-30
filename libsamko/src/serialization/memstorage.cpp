@@ -9,6 +9,9 @@ MemStorage::MemStorage() {
 
 /* reading */
 
+void MemStorage::parse(const string& data) {
+}
+
 std::string MemStorage::_readString(const std::string& name) {
     //printf("Reading string %s, value %s\n", name.c_str(), strMap[name].c_str());
     return strMap[name];
@@ -30,6 +33,10 @@ double MemStorage::_readDouble(const std::string& name){
 }
 
 /* writing */
+
+string MemStorage::data() const {
+    return string();
+}
 
 void MemStorage::_writeString(const std::string& name, const std::string& val){
     //printf("Writing string %s, value %s\n", name.c_str(), val.c_str());
