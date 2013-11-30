@@ -3,6 +3,9 @@
 
 namespace samko {
 
+Writer::Writer(bool autoPrefix) : Serializer(autoPrefix) {
+}
+
 void Writer::writeObject(const std::string& name, const Serializable& obj){
     std::string scope = getObjPrefix();
     setObjPrefix(getPrefixedName(name));
@@ -11,19 +14,19 @@ void Writer::writeObject(const std::string& name, const Serializable& obj){
 }
 
 void Writer::writeString(const std::string& name, const std::string& val){
-    _writeString(getPrefixedName(name), val);
+    _writeString(autoprefixName(name), val);
 }
 
 void Writer::writeInt(const std::string& name, int val) {
-    _writeInt(getPrefixedName(name), val);
+    _writeInt(autoprefixName(name), val);
 }
 
 void Writer::writeFloat(const std::string& name, float val) {
-    _writeFloat(getPrefixedName(name), val);
+    _writeFloat(autoprefixName(name), val);
 }
 
 void Writer::writeDouble(const std::string& name, double val) {
-    _writeDouble(getPrefixedName(name), val);
+    _writeDouble(autoprefixName(name), val);
 }
 
 void Writer::writeMat(const std::string& name, const cv::Mat& mat) {

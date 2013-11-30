@@ -12,6 +12,10 @@ class Serializable;
 class Reader : public Serializer {
 public:
 
+    /** standard constructor
+     *  @param autoPrefix   send prefixed names to _read* methods */
+    Reader(bool autoPrefix = true);
+
     /// parse data from string
     /// @warning must be called previous to read* method
     /// @throws std::runtime error on failure

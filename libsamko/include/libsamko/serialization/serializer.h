@@ -10,6 +10,11 @@ namespace samko {
 class Serializer {
 
 public:
+
+    /** standard constructor
+     *  @param autoPrefix   enable autoprefix in autoprefixName*/
+    Serializer(bool autoPrefix = true);
+
     /// ObjPrefix member getter
     /// @see ObjPrefix
     const std::string& getObjPrefix() const;
@@ -21,9 +26,19 @@ public:
 protected:
     std::string     ObjPrefix;
 
+    std::string getPrefixSeparator() const;
+
     /// Ensures attribute name uniqueness for multiple objects of same class
     /// @returns ObjPrefix + separator + name
     std::string getPrefixedName(const std::string& name);
+
+    /// Generates name according to AutoPrefix
+    std::string autoprefixName(const std::string& name);
+
+    virtual void onBeforeObjPrefixChange(std::string name, std::string oldPrefix);
+
+private:
+    bool    AutoPrefix;
 };
 
 }

@@ -3,6 +3,9 @@
 
 namespace samko {
 
+Reader::Reader(bool autoPrefix) : Serializer(autoPrefix) {
+}
+
 void Reader::readObject(const std::string& name, Serializable& obj){
     std::string scope = getObjPrefix();
     setObjPrefix(getPrefixedName(name));
@@ -11,19 +14,19 @@ void Reader::readObject(const std::string& name, Serializable& obj){
 }
 
 std::string Reader::readString(const std::string& name) {
-    return _readString(getPrefixedName(name));
+    return _readString(autoprefixName(name));
 }
 
 int Reader::readInt(const std::string& name) {
-    return _readInt(getPrefixedName(name));
+    return _readInt(autoprefixName(name));
 }
 
 float Reader::readFloat(const std::string& name) {
-    return _readFloat(getPrefixedName(name));
+    return _readFloat(autoprefixName(name));
 }
 
 double Reader::readDouble(const std::string& name) {
-    return _readDouble(getPrefixedName(name));
+    return _readDouble(autoprefixName(name));
 }
 
 void Reader::readMat(const std::string name, cv::Mat& mat){
