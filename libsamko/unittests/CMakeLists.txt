@@ -10,7 +10,9 @@ SET(calib2d_test_SOURCES
    )
 
 SET(serialization_test_SOURCES
+	tests/serialization/common.cpp
 	tests/serialization/basetest.cpp
+	tests/serialization/jsontest.cpp
    )
 
 SET(test_SOURCES 

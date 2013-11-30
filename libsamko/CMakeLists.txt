@@ -14,6 +14,9 @@ set (serialization_SOURCES
 	src/serialization/reader.cpp
 	src/serialization/writer.cpp
 	src/serialization/memstorage.cpp
+	src/serialization/json_common.cpp
+	src/serialization/jsonwriter.cpp
+	src/serialization/jsonreader.cpp
     )
 
 set (ui_SOURCES
@@ -30,6 +33,7 @@ SET (SOURCES
 add_library(samko ${SOURCES})
 target_link_libraries(samko 
 	opencv_core opencv_imgproc opencv_highgui opencv_calib3d opencv_features2d
+	jansson
   )
 
 add_subdirectory (unittests)

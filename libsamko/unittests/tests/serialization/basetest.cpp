@@ -1,15 +1,16 @@
 /* THIS TEST MUST BE PASSED BY EVERY READER/WRITER COUPLE */
 
-#include <gtest/gtest.h>
-#include <mocks/serialization/mockserializable.h>
-#include <mocks/serialization/mockserializable.h>
-
+#include "common.h"
 #include <libsamko/serialization/memstorage.h>
+#include <libsamko/serialization/jsonwriter.h>
+#include <libsamko/serialization/jsonreader.h>
+
+using namespace samko;
 
 using ::testing::StrictMock;
 using ::testing::Return;
 
-void TestReaderWriter(samko::Reader& reader, samko::Writer& writer) {
+void TestReaderWriter(Reader& reader, Writer& writer) {
     MockSerializable::Data testData = {"samko", 27, 5.3, 2.12f};
 
     StrictMock<MockSerializable> storeMock, loadedMock;
@@ -20,15 +21,16 @@ void TestReaderWriter(samko::Reader& reader, samko::Writer& writer) {
     std::string data = writer.data();
     reader.parse(data);
     reader.readObject("testData", loadedMock);
-    MockSerializable::Data endData = loadedMock.getReadData();
-
-    EXPECT_EQ(testData.str, endData.str);
-    EXPECT_EQ(testData.i, endData.i);
-    EXPECT_DOUBLE_EQ(testData.d, endData.d);
-    EXPECT_FLOAT_EQ(testData.d, endData.d);
+    dataEquals(testData, loadedMock.getReadData());
 }
 
-TEST(MemStorageBaseTest, ReadWrite) {
-    samko::MemStorage storage;
+TEST(BaseSerializationTest, MemStorageReadWrite) {
+    MemStorage storage;
     TestReaderWriter(storage, storage);
+}
+
+TEST(BaseSerializationTest, JsonReadWrite) {
+    JsonReader reader;
+    JsonWriter writer;
+    TestReaderWriter(reader, writer);
 }

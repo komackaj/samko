@@ -1,7 +1,10 @@
 #include <gtest/gtest.h>
 
 #include <libsamko/calib2d/calibprojective.h>
+
 #include <libsamko/serialization/memstorage.h>
+#include <libsamko/serialization/jsonreader.h>
+#include <libsamko/serialization/jsonwriter.h>
 
 #include <opencv2/highgui/highgui.hpp>
 
@@ -70,6 +73,13 @@ void testPreciseGrid(CalibrationProjective2D calib) {
         ExpectPoints2fNear(tmp[i], img[i], 2e-5);
 }
 
+CalibrationProjective2D initPrecise() {
+    CalibrationProjective2D calib(SPACING_MM, 2);
+	Mat image = generatePreciseField();
+	calib.compute(image, GRID_COLS, GRID_ROWS);
+	return calib;
+}
+
 /* TEST CASES */
 
 TEST(CalibProjective2DTest, InputParameters) {
@@ -79,11 +89,7 @@ TEST(CalibProjective2DTest, InputParameters) {
 }
 
 TEST(CalibProjective2DTest, PreciseGridCompute) {
-	CalibrationProjective2D calib(SPACING_MM, 2);
-
-	Mat image = generatePreciseField();
-	calib.compute(image, GRID_COLS, GRID_ROWS);
-
+	auto calib = initPrecise();
 	vector<Point2f> imgcrds = calib.getGridImageCoords();
 	EXPECT_EQ(GRID_COLS*GRID_ROWS, imgcrds.size());
 	EXPECT_LT(imgcrds.front().x, imgcrds.back().x);
@@ -91,17 +97,12 @@ TEST(CalibProjective2DTest, PreciseGridCompute) {
 
 	Point2f meanError = calib.getMeanReprojectionError();
 	ExpectPoints2fNear(meanError, Point2f(0.f, 0.f), 2e-6);
-
     //imshow("Residuals", calib.getResidualsImage());
 	//waitKey();
 }
 
 TEST(CalibProjective2DTest, PreciseGridTransform) {
-    CalibrationProjective2D calib(SPACING_MM, 2);
-
-	Mat image = generatePreciseField();
-	calib.compute(image, GRID_COLS, GRID_ROWS);
-
+    auto calib = initPrecise();
     Point2f ptStart (SPACING_PIXELS, SPACING_PIXELS);
     Point2f pt = calib.imageToGrid(ptStart);
     ExpectPoints2fNear(pt, Point2f(0.f, 0.f), 6e-3);  // grid LCS starts at 0,0
@@ -111,11 +112,7 @@ TEST(CalibProjective2DTest, PreciseGridTransform) {
 }
 
 TEST(CalibProjective2DTest, PreciseGridTransformCorners) {
-    CalibrationProjective2D calib(SPACING_MM, 2);
-
-	Mat image = generatePreciseField();
-	calib.compute(image, GRID_COLS, GRID_ROWS);
-
+    auto calib = initPrecise();
     testPreciseGrid(calib);
 }
 
@@ -140,16 +137,30 @@ TEST(CalibProjective2DTest, UserInputRequired) {
 }
 
 TEST(CalibProjective2DTest, Serialization) {
-    // generate object
-    CalibrationProjective2D calib(SPACING_MM, 2);
-	Mat image = generatePreciseField();
-	calib.compute(image, GRID_COLS, GRID_ROWS);
+    auto calib = initPrecise();
     // serialize it
     samko::MemStorage storage;
     storage.writeObject("Calib2d", calib);
     // deserialize it
     CalibrationProjective2D deserialized(0, 0);
     storage.readObject("Calib2d", deserialized);
+    // test
+    testPreciseGrid(deserialized);
+}
+
+TEST(CalibProjective2DTest, SerializationJson) {
+    auto calib = initPrecise();
+    // serialize it
+    JsonWriter writer;
+    writer.writeObject("Calib2d", calib);
+    std::string data = writer.data();
+
+    // deserialize it
+    CalibrationProjective2D deserialized(0, 0);
+    JsonReader reader;
+    reader.parse(data);
+    reader.readObject("Calib2d", deserialized);
+
     // test
     testPreciseGrid(deserialized);
 }
