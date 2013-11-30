@@ -27,8 +27,6 @@ protected:
 private:
 
     JsonPtr     Data;     ///<written data
-
-    /// @todo: extract prefix parser (see JsonReader::getCurrentObj)
     json_t* getCurrentObject() const;
 };
 

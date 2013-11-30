@@ -1,6 +1,7 @@
 #include <libsamko/serialization/jsonreader.h>
 #include <jansson.h>
 #include <stdexcept>
+#include <libsamko/stringutils.h>
 
 using namespace std;
 
@@ -27,27 +28,13 @@ const json_t* JsonReader::getCurrentObject() const {
     if (json_is_null(current))
         throw std::logic_error("JsonReader: Reading before parsed");
 
-    string prefix = getObjPrefix(),
-            separator = getPrefixSeparator();
-
-    string::size_type pos = prefix.find(separator);
-    while (pos!= string::npos) {
-        //printf("Parsing %s, pos %lu\n", prefix.c_str(), pos);
-        //printf("Reading object %s\n", prefix.substr(0, pos).c_str());
-        current = json_object_get(current, prefix.substr(0, pos).c_str());
+    vector<string> path = split(getObjPrefix(), getPrefixSeparator());
+    for (const string& name : path) {
+        //printf("Reading object %s\n", name.c_str());
+        current = json_object_get(current, name.c_str());
         if (!current)
-            throw std::logic_error("JsonReader: json_object_get failed");
-        prefix.erase(0, pos + separator.size());
-        pos = prefix.find(separator);
+            throw std::logic_error("JsonWriter: json_object_get failed");
     }
-
-    if (!prefix.empty()) {
-        //printf("Reading object %s\n", prefix.c_str());
-        current = json_object_get(current, prefix.c_str());
-        if (!current)
-            throw std::logic_error("JsonReader: json_object_get failed (final stage)");
-    }
-
     return current;
 }
 

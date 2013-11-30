@@ -24,9 +24,7 @@ protected:
 private:
     JsonPtr     _root;
 
-    /// @todo: extract prefix parser (see JsonWriter::getCurrentObj)
     const json_t* getCurrentObject() const;
-
     void throwBadType(const std::string& key, const std::string& expectedType) const;
 };
 

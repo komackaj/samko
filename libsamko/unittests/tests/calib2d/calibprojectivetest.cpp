@@ -80,6 +80,19 @@ CalibrationProjective2D initPrecise() {
 	return calib;
 }
 
+void testSerializers(Reader& reader, Writer& writer) {
+    auto calib = initPrecise();
+    // serialize it
+    writer.writeObject("Calib2d", calib);
+    std::string data = writer.data();
+    // deserialize it
+    CalibrationProjective2D deserialized(0, 0);
+    reader.parse(data);
+    reader.readObject("Calib2d", deserialized);
+    // test
+    testPreciseGrid(deserialized);
+}
+
 /* TEST CASES */
 
 TEST(CalibProjective2DTest, InputParameters) {
@@ -137,30 +150,12 @@ TEST(CalibProjective2DTest, UserInputRequired) {
 }
 
 TEST(CalibProjective2DTest, Serialization) {
-    auto calib = initPrecise();
-    // serialize it
     samko::MemStorage storage;
-    storage.writeObject("Calib2d", calib);
-    // deserialize it
-    CalibrationProjective2D deserialized(0, 0);
-    storage.readObject("Calib2d", deserialized);
-    // test
-    testPreciseGrid(deserialized);
+    testSerializers(storage, storage);
 }
 
 TEST(CalibProjective2DTest, SerializationJson) {
-    auto calib = initPrecise();
-    // serialize it
-    JsonWriter writer;
-    writer.writeObject("Calib2d", calib);
-    std::string data = writer.data();
-
-    // deserialize it
-    CalibrationProjective2D deserialized(0, 0);
     JsonReader reader;
-    reader.parse(data);
-    reader.readObject("Calib2d", deserialized);
-
-    // test
-    testPreciseGrid(deserialized);
+    JsonWriter writer;
+    testSerializers(reader, writer);
 }
