@@ -28,6 +28,7 @@ SET (SOURCES
 	${serialization_SOURCES}
 	${ui_SOURCES}
 	src/cvutils.cpp
+	src/stringutils.cpp
     )
 
 add_library(samko ${SOURCES})

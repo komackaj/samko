@@ -16,6 +16,7 @@ SET(serialization_test_SOURCES
    )
 
 SET(test_SOURCES 
+    tests/strutilstest.cpp
 	${calib2d_test_SOURCES}
 	${serialization_test_SOURCES}
    )
