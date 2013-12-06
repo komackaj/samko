@@ -17,6 +17,7 @@ set (serialization_SOURCES
 	src/serialization/json_common.cpp
 	src/serialization/jsonwriter.cpp
 	src/serialization/jsonreader.cpp
+	src/serialization/adapters/matserializableadapter.cpp
     )
 
 set (ui_SOURCES

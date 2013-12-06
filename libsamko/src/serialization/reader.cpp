@@ -1,5 +1,6 @@
 #include <libsamko/serialization/reader.h>
 #include <libsamko/serialization/serializable.h>
+#include <libsamko/serialization/adapters/matserializableadapter.h>
 
 namespace samko {
 
@@ -43,16 +44,8 @@ std::vector<double> Reader::readDoubleArray(const std::string& name){
 /* common objects */
 
 void Reader::readMat(const std::string name, cv::Mat& mat){
-    cv::Size size;
-    int type = readInt(name + "-type");
-    size.width = readInt(name + "-cols");
-    size.height = readInt(name + "-rows");
-    mat.create(size, type);
-
-    double *data = mat.ptr<double>();
-    int elems = mat.size().area();
-    for (int i = 0; i < elems; ++i, ++data)
-        *data = readDouble(name + std::to_string(i));
+    MatSerializableAdapter serAdapt(mat);
+    readObject(name, serAdapt);
 }
 
 } //namespace samko

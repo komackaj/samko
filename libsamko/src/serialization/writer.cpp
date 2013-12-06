@@ -1,5 +1,6 @@
 #include <libsamko/serialization/writer.h>
 #include <libsamko/serialization/serializable.h>
+#include <libsamko/serialization/adapters/matserializableadapter.h>
 
 namespace samko {
 
@@ -44,13 +45,8 @@ void Writer::write(const std::string& name, const std::vector<double>& vals) {
 /* common objects */
 
 void Writer::write(const std::string& name, const cv::Mat& mat) {
-    write(name + "-type", mat.type());
-    write(name + "-cols", mat.cols);
-    write(name + "-rows", mat.rows);
-    const double *data = mat.ptr<double>();
-    int elems = mat.size().area();
-    for (int i = 0; i < elems; ++i, ++data)
-         write(name + std::to_string(i), *data);
+    MatSerializableAdapter serAdapt(mat);
+    write(name, serAdapt);
 }
 
 } //namespace samko
