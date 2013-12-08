@@ -2,6 +2,8 @@
 #define HEADER_7703ED1279D5F2C1
 
 #pragma once
+#include <libsamko/serialization/serializable.h>
+
 #include <opencv2/imgproc/imgproc.hpp>
 #include <libsamko/calib2d/coordhomog.h>
 
@@ -15,7 +17,7 @@ class UIFactory;
 /// @todo implement Jung's transformation
 /// @todo additional out-of-sample control points on grid to evaluate precision
 /// @todo camera distorsion parameters computation
-class CalibrationProjective2D {
+class CalibrationProjective2D : public Serializable {
 public:
 
 	/** standard constructor
@@ -66,6 +68,10 @@ public:
     /// @returns image with drawn error ellipses for every point of grid
     /// @throws std::logic_error on failure (object not initialized via successful call to compute)
 	cv::Mat	getResidualsImage() const;
+
+/// (de)serialization
+    virtual void readFrom(Reader& reader);
+    virtual void writeTo(Writer& writer) const;
 
 private:
 

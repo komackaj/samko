@@ -1,6 +1,11 @@
 #include <gtest/gtest.h>
 
 #include <libsamko/calib2d/calibprojective.h>
+
+#include <libsamko/serialization/memstorage.h>
+#include <libsamko/serialization/jsonreader.h>
+#include <libsamko/serialization/jsonwriter.h>
+
 #include <opencv2/highgui/highgui.hpp>
 
 #include <mocks/ui/mockuifactory.h>
@@ -46,52 +51,7 @@ Mat generatePreciseField() {
     return image;
 }
 
-/* TEST CASES */
-
-TEST(CalibProjective2DTest, InputParameters) {
-	ASSERT_LE(RADIUS, SPACING_PIXELS);
-	ASSERT_GE(IMAGE_WIDTH, GRID_COLS*SPACING_PIXELS + RADIUS );
-	ASSERT_GE(IMAGE_HEIGHT, GRID_ROWS*SPACING_PIXELS + RADIUS );
-}
-
-TEST(CalibProjective2DTest, PreciseGridCompute) {
-	CalibrationProjective2D calib(SPACING_MM, 2);
-
-	Mat image = generatePreciseField();
-	calib.compute(image, GRID_COLS, GRID_ROWS);
-
-	vector<Point2f> imgcrds = calib.getGridImageCoords();
-	EXPECT_EQ(GRID_COLS*GRID_ROWS, imgcrds.size());
-	EXPECT_LT(imgcrds.front().x, imgcrds.back().x);
-	EXPECT_LT(imgcrds.front().y, imgcrds.back().y);
-
-	Point2f meanError = calib.getMeanReprojectionError();
-	ExpectPoints2fNear(meanError, Point2f(0.f, 0.f), 2e-6);
-
-    //imshow("Residuals", calib.getResidualsImage());
-	//waitKey();
-}
-
-TEST(CalibProjective2DTest, PreciseGridTransform) {
-    CalibrationProjective2D calib(SPACING_MM, 2);
-
-	Mat image = generatePreciseField();
-	calib.compute(image, GRID_COLS, GRID_ROWS);
-
-    Point2f ptStart (SPACING_PIXELS, SPACING_PIXELS);
-    Point2f pt = calib.imageToGrid(ptStart);
-    ExpectPoints2fNear(pt, Point2f(0.f, 0.f), 6e-3);  // grid LCS starts at 0,0
-
-    pt = calib.gridToImage(pt);
-    ExpectPoints2fNear(pt, ptStart, 2e-5);
-}
-
-TEST(CalibProjective2DTest, PreciseGridTransformCorners) {
-    CalibrationProjective2D calib(SPACING_MM, 2);
-
-	Mat image = generatePreciseField();
-	calib.compute(image, GRID_COLS, GRID_ROWS);
-
+void testPreciseGrid(CalibrationProjective2D calib) {
     const size_t PT_COUNT = 4;
     vector<Point2f> img(PT_COUNT), grid(PT_COUNT);
     img[0] = Point2f(SPACING_PIXELS, SPACING_PIXELS);
@@ -113,6 +73,63 @@ TEST(CalibProjective2DTest, PreciseGridTransformCorners) {
         ExpectPoints2fNear(tmp[i], img[i], 2e-5);
 }
 
+CalibrationProjective2D initPrecise() {
+    CalibrationProjective2D calib(SPACING_MM, 2);
+	Mat image = generatePreciseField();
+	calib.compute(image, GRID_COLS, GRID_ROWS);
+	return calib;
+}
+
+void testSerializers(Reader& reader, Writer& writer) {
+    auto calib = initPrecise();
+    // serialize it
+    writer.write("Calib2d", calib);
+    std::string data = writer.data();
+    //printf("Data: %s", data.c_str());
+    // deserialize it
+    CalibrationProjective2D deserialized(0, 0);
+    reader.parse(data);
+    reader.readObject("Calib2d", deserialized);
+    // test
+    testPreciseGrid(deserialized);
+}
+
+/* TEST CASES */
+
+TEST(CalibProjective2DTest, InputParameters) {
+	ASSERT_LE(RADIUS, SPACING_PIXELS);
+	ASSERT_GE(IMAGE_WIDTH, GRID_COLS*SPACING_PIXELS + RADIUS );
+	ASSERT_GE(IMAGE_HEIGHT, GRID_ROWS*SPACING_PIXELS + RADIUS );
+}
+
+TEST(CalibProjective2DTest, PreciseGridCompute) {
+	auto calib = initPrecise();
+	vector<Point2f> imgcrds = calib.getGridImageCoords();
+	EXPECT_EQ(GRID_COLS*GRID_ROWS, imgcrds.size());
+	EXPECT_LT(imgcrds.front().x, imgcrds.back().x);
+	EXPECT_LT(imgcrds.front().y, imgcrds.back().y);
+
+	Point2f meanError = calib.getMeanReprojectionError();
+	ExpectPoints2fNear(meanError, Point2f(0.f, 0.f), 2e-6);
+    //imshow("Residuals", calib.getResidualsImage());
+	//waitKey();
+}
+
+TEST(CalibProjective2DTest, PreciseGridTransform) {
+    auto calib = initPrecise();
+    Point2f ptStart (SPACING_PIXELS, SPACING_PIXELS);
+    Point2f pt = calib.imageToGrid(ptStart);
+    ExpectPoints2fNear(pt, Point2f(0.f, 0.f), 6e-3);  // grid LCS starts at 0,0
+
+    pt = calib.gridToImage(pt);
+    ExpectPoints2fNear(pt, ptStart, 2e-5);
+}
+
+TEST(CalibProjective2DTest, PreciseGridTransformCorners) {
+    auto calib = initPrecise();
+    testPreciseGrid(calib);
+}
+
 TEST(CalibProjective2DTest, UserInputRequired) {
     CalibrationProjective2D calib(SPACING_MM, 2);
 
@@ -131,4 +148,15 @@ TEST(CalibProjective2DTest, UserInputRequired) {
 
     ExpectPoints2fNear(gridPt, expectedGridPt, 0.6f);
     ExpectPoints2fNear(calib.gridToImage(gridPt), imgPt, 0.6f);
+}
+
+TEST(CalibProjective2DTest, Serialization) {
+    samko::MemStorage storage;
+    testSerializers(storage, storage);
+}
+
+TEST(CalibProjective2DTest, SerializationJson) {
+    JsonReader reader;
+    JsonWriter writer;
+    testSerializers(reader, writer);
 }
