@@ -17,7 +17,7 @@ public:
     MockUIGridDetector* mockDetector(unsigned int cols, unsigned int rows, std::vector<cv::Point2f> mockData) {
         ::testing::StrictMock<MockUIGridDetector> *detector = new ::testing::StrictMock<MockUIGridDetector>();
 
-        EXPECT_CALL(*detector, getCornersFromUser())
+        EXPECT_CALL(*detector, getCornersFromUser(::testing::_))
             .WillOnce(::testing::Return(mockData));
 
         return detector;

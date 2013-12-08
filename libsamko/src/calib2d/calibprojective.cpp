@@ -33,7 +33,7 @@ void CalibrationProjective2D::detectGrid(Mat image, unsigned int colCount, unsig
         if (factory){
             auto gridDetector = factory->getGridDetector();
             if(gridDetector)
-                ImageCoords = gridDetector->getGrid(colCount, rowCount);
+                ImageCoords = gridDetector->getGrid(image, colCount, rowCount);
             else
                 throw std::runtime_error("CalibrationProjective2D::detectGrid - given factory does not support GridDetector");
         }else{

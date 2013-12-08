@@ -8,7 +8,7 @@ class MockUIGridDetector : public samko::UIGridDetector {
 
 public:
 
-  MOCK_METHOD0(getCornersFromUser, std::vector<cv::Point2f> (void));
+  MOCK_METHOD1(getCornersFromUser, std::vector<cv::Point2f> (const cv::Mat&));
 
 };
 

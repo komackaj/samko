@@ -26,19 +26,21 @@ public:
                                           unsigned int cols, unsigned int rows) const;
 
     /** Get calibration grid coordinates from user input
+     *  @param  image   image of calibration grid
      *  @param  cols    number of columns in calibration grid
      *  @param  rows    number of rows in calibration grid
      *  @throws samko::UIException on user abort
      *  @returns vector of grid image coordinates sorted from top-left to right-bottom
                  (by meaning in LCS of grid) */
-    std::vector<cv::Point2f> getGrid(unsigned int cols, unsigned int rows);
+    std::vector<cv::Point2f> getGrid(const cv::Mat& image, unsigned int cols, unsigned int rows);
 
 protected:
 
     /** Receive corners from user input
+     *  @param  image   image of calibration grid
      *  @returns corners as specified in generateGrid method
      *  @throws samko::UIException on user abort */
-    virtual std::vector<cv::Point2f> getCornersFromUser() = 0;
+    virtual std::vector<cv::Point2f> getCornersFromUser(const cv::Mat& image) = 0;
 };
 
 } //namespace

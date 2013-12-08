@@ -10,8 +10,8 @@ namespace samko {
 
 UIGridDetector::~UIGridDetector() {
 }
-vector<Point2f> UIGridDetector::getGrid(unsigned int cols, unsigned int rows) {
-    auto corners = getCornersFromUser();
+vector<Point2f> UIGridDetector::getGrid(const cv::Mat& image, unsigned int cols, unsigned int rows) {
+    auto corners = getCornersFromUser(image);
     return generateGrid(corners, cols, rows);
 }
 
