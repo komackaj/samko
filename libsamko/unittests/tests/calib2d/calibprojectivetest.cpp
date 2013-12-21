@@ -156,3 +156,16 @@ TEST(CalibProjective2DTest, SerializationJson) {
     JsonWriter writer;
     testSerializers(reader, writer);
 }
+
+TEST(CalibProjective2DTest, RealGrid) {
+    constexpr unsigned int COLS = 11;
+    constexpr unsigned int ROWS = 8;
+    CalibrationProjective2D calib(25, 5);
+
+    Mat image = imread("data/calibFields/calib001.jpg");
+    calib.compute(image, COLS, ROWS);
+
+    Point2f err = calib.getMeanReprojectionError();
+    float meanCoordErr = sqrt(0.5f * (err.x * err.x + err.y * err.y));
+    EXPECT_LE(meanCoordErr, 0.4);
+}
