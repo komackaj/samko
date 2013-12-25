@@ -22,6 +22,7 @@ private:
 
 private slots:
     void on_action_Calibration_triggered();
+    void on_actionEllipseTargetRefiner_triggered();
 };
 
 #endif // MAINWINDOW_H

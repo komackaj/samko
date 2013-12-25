@@ -2,8 +2,9 @@
 #include "ui_calib2ddialog.h"
 #include <QPushButton>
 
+#include "utils.h"
+
 #include <libsamko/ui/uiexception.h>
-#include <opencv2/imgproc/imgproc.hpp>
 
 /*
 #include <QImageWriter>
@@ -51,19 +52,9 @@ void Calib2DDialog::on_image_mousePressed(QMouseEvent *e)
     updateUI();
 }
 
-QImage Calib2DDialog::imageFromMat(const cv::Mat& src, cv::Mat& convData)
-{
-    cvtColor(src, convData, CV_BGR2RGBA);
-    QImage img(const_cast<uchar*>(convData.data), convData.cols, convData.rows, convData.step1(), QImage::Format_ARGB32);
-    /*QImageWriter writer("/tmp/test.png");
-    if (!writer.write(img))
-        qDebug() << writer.errorString();*/
-    return img;
-}
-
 std::vector<cv::Point2f> Calib2DDialog::getCornersFromUser(const cv::Mat& image)
 {
-    QImage img = imageFromMat(image, _rgb);
+    QImage img = Utils::imageFromMat(image, _rgb);
     this->ui->image->addImage(img);
     exec();
     if (pts.size() != 3)

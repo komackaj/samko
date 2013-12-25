@@ -17,3 +17,8 @@ void MainWindow::on_action_Calibration_triggered()
 {
     _delegate.calibrate();
 }
+
+void MainWindow::on_actionEllipseTargetRefiner_triggered()
+{
+    _delegate.toolEllipseTargetRefiner();
+}

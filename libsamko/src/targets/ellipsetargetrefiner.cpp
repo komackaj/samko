@@ -4,6 +4,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <numeric>
 
+#include <opencv2/highgui/highgui.hpp>
 using namespace cv;
 using namespace std;
 
@@ -20,11 +21,13 @@ Point2f EllipseTargetRefiner::refine(const Mat& image, const Point2f& approxPt) 
     woi.width = min(woi.width, image.cols);
     woi.height = min(woi.height, image.rows);
     Mat img(image, woi);
-    Mat gradientImg(img.size(), CV_8SC3);
+    Mat lapl(image.size(), CV_8SC1);
+    Laplacian(CvUtils::toGrayscale(img), lapl, 1, 5);
+    _measImg = shared_ptr<Mat>(new Mat(CvUtils::toGrayscale(lapl)));
 
-    Laplacian(CvUtils::toGrayscale(img), gradientImg, 1, 5);
+    imwrite("gray.png", *_measImg);
 
-    auto pixels = findThresholdedPixels(gradientImg, approxPt);
+    auto pixels = findThresholdedPixels(*_measImg, approxPt);
     BorderMap borderMap = generateBorder(pixels);
     return getCenter(borderMap) + Point2f(woi.x, woi.y);
 }
@@ -32,7 +35,7 @@ Point2f EllipseTargetRefiner::refine(const Mat& image, const Point2f& approxPt) 
 vector<Point> EllipseTargetRefiner::findThresholdedPixels(Mat& img, const Point& innerPt) const {
 
     //find black pixels - edges by Laplacian
-    typedef Vec<char, 3> T;
+    typedef Vec<uchar, 1> T;
     vector<Point> black;
     int id = 0;
     int width = img.cols;
@@ -40,7 +43,7 @@ vector<Point> EllipseTargetRefiner::findThresholdedPixels(Mat& img, const Point&
     MatIterator_<T> akt = img.begin<T>(), end = img.end<T>();
     for(; akt != end; ++akt, ++id) {
         T val = *akt;
-        if (val[0] + val[1] + val[2] > 0) // find white pixels
+        if (val[0] == 0) // find black pixels
             black.emplace_back(id % width, id / width);
     }
     return black;
@@ -70,6 +73,10 @@ Point2f EllipseTargetRefiner::getCenter(const BorderMap &borderMap) const {
         sum.y += akt->first * count;
     }
     return Point2f(sum.x / total, sum.y / total);
+}
+
+const Mat* EllipseTargetRefiner::getLastMeasImage() const {
+    return _measImg.get();
 }
 
 } //namespace samko

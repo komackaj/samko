@@ -4,7 +4,7 @@
 #include "targetrefiner.h"
 #include <vector>
 #include <map>
-
+#include <memory>
 
 namespace samko {
 
@@ -21,8 +21,14 @@ public:
 
     virtual cv::Point2f refine(const cv::Mat& image, const cv::Point2f& approxPt);
 
+    /** @brief get last image used for target center measurement
+     *  @return nullptr if measurement was not yet performed, image otherwise */
+    const cv::Mat* getLastMeasImage() const;
+
 private:
     uint _targetRadius;
+
+    std::shared_ptr<cv::Mat>    _measImg;
 
     /// structure holding minimum and maximum target image coordinate for given row
     struct minmax {

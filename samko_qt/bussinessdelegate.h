@@ -9,6 +9,8 @@ public:
     BussinessDelegate();
     void calibrate();
 
+    void toolEllipseTargetRefiner();
+
 protected:
     QtUIFactory _factory;
 };

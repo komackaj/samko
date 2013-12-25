@@ -29,7 +29,6 @@ private:
     cv::Mat _rgb;
 
     void updateUI();
-    QImage imageFromMat(const cv::Mat& src, cv::Mat& convData);
 };
 
 #endif // CALIB2DDIALOG_H

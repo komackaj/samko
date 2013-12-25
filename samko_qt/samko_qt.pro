@@ -18,16 +18,21 @@ SOURCES += main.cpp\
     bussinessdelegate.cpp \
     forms/calib2ddialog.cpp \
     widgets/qmeasureview.cpp \
-    qtuifactory.cpp
+    qtuifactory.cpp \
+    forms/tools/ellipsetargetrefinerdialog.cpp \
+    utils.cpp
 
 HEADERS  += mainwindow.h \
     bussinessdelegate.h \
     forms/calib2ddialog.h \
     widgets/qmeasureview.h \
-    qtuifactory.h
+    qtuifactory.h \
+    forms/tools/ellipsetargetrefinerdialog.h \
+    utils.h
 
 FORMS    += mainwindow.ui \
-    forms/calib2ddialog.ui
+    forms/calib2ddialog.ui \
+    forms/tools/ellipsetargetrefinerdialog.ui
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../build/bin/release/ -lsamko
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../build/bin/debug/ -lsamko
