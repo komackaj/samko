@@ -21,9 +21,13 @@ Point2f EllipseTargetRefiner::refine(const Mat& image, const Point2f& approxPt) 
     woi.width = min(woi.width, image.cols);
     woi.height = min(woi.height, image.rows);
     Mat img(image, woi);
-    Mat lapl(image.size(), CV_8SC1);
-    Laplacian(CvUtils::toGrayscale(img), lapl, 1, 5);
-    _measImg = shared_ptr<Mat>(new Mat(CvUtils::toGrayscale(lapl)));
+
+    Mat lapl(image.size(), CV_8SC1),
+        blurred;
+    GaussianBlur(CvUtils::toGrayscale(img), blurred, Size(5, 5), 3);
+    Laplacian(blurred, lapl, 1, 5);
+    adaptiveThreshold(CvUtils::toGrayscale(lapl), img, 255, ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY, 3, 5);
+    _measImg = shared_ptr<Mat>(new Mat(img));
 
     imwrite("gray.png", *_measImg);
 
