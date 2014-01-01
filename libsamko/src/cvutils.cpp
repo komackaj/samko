@@ -29,8 +29,17 @@ Mat CvUtils::gray2RGB(const cv::Mat& src){
 
 Mat CvUtils::toGrayscale(const cv::Mat& src){
     Mat ret(src.size(), CV_8UC1);
-    if (src.channels() == 1)
-        ret = src.clone();
+    if (src.channels() == 1) {
+        if (src.type() == CV_8UC1)
+            ret = src.clone();
+        else {
+            MatConstIterator_<short> srcAkt = src.begin<short>();
+            MatIterator_<uchar> dstAkt = ret.begin<uchar>(), dstEnd = ret.end<uchar>();
+            for (; dstAkt!=dstEnd; ++srcAkt, ++dstAkt){
+                *dstAkt = *srcAkt + 128;
+            }
+        }
+    }
     else
         cvtColor(src, ret, CV_RGB2GRAY);
     return ret;
