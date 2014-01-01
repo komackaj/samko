@@ -30,13 +30,26 @@ private:
 
     std::shared_ptr<cv::Mat>    _measImg;
 
+    /// structure holding minimum and maximum target image coordinate for given row
+    struct minmax {
+        int min, max;
+        size_t span() const { return max - min + 1; }
+    };
+
+    /// minimum and maximum target coordinate for given row
+    typedef std::map<int, minmax>   BorderMap;
+
+    BorderMap generateBorder(const std::vector<cv::Point>& pts) const;
+
     /**
-     * @brief find on image edge detected pixels of target (via Laplacian)
+     * @brief find largest contour covering inner point (excluding image border contour)
      * @param img       image to work with
      * @param innerPt   image point inside target
      * @return image coordinates of border pixels
      */
-    std::vector<cv::Point> findEllipseContour(cv::Mat& img) const;
+    BorderMap findEllipseContour(cv::Mat& img, const cv::Point& innerPt) const;
+
+    cv::RotatedRect fitEllipseBorder(const BorderMap& bordermap) const;
 };
 
 } //namespace samko
