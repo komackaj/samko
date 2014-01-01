@@ -12,6 +12,12 @@ class CvUtils {
 public:
 
 	static float PointDist(const cv::Point2f &p1, const cv::Point2f &p2);
+
+    /** @brief constructs square from center and edge length
+     *  @param center    center of square
+     *  @param by        distance to inflate by*/
+    static cv::Rect squareFromCenter(const cv::Point2f& center, float inflateBy);
+
 };
 
 } //namespace samko
