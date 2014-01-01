@@ -18,6 +18,11 @@ public:
      *  @param by        distance to inflate by*/
     static cv::Rect squareFromCenter(const cv::Point2f& center, float inflateBy);
 
+    /// convert grayscale image to 3-channel RBG
+    static cv::Mat gray2RGB(const cv::Mat& src);
+
+    /// convert image to grayscale
+    static cv::Mat toGrayscale(const cv::Mat& src);
 };
 
 } //namespace samko

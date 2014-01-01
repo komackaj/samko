@@ -145,11 +145,7 @@ cv::Mat CalibrationProjective2D::buildResidualsImage(Mat srcImage, vector<uchar>
 	const int   SCALE = 300;
 	const float MIN_ERR = 1.f / SCALE;
 
-    Mat ret(srcImage.size(), CV_8UC3);
-    if (srcImage.channels() == 1)
-        cvtColor(srcImage, ret, CV_GRAY2RGB);
-    else
-        ret = srcImage.clone();
+    Mat ret = CvUtils::gray2RGB(srcImage);
 
     size_t id = 0;
 	for (const Point2f &pt : ImageCoords)

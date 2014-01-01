@@ -1,4 +1,5 @@
 #include <libsamko/cvutils.h>
+#include <opencv2/imgproc/imgproc.hpp>
 
 using namespace cv;
 
@@ -17,5 +18,22 @@ Rect CvUtils::squareFromCenter(const cv::Point2f& center, float inflateBy) {
     );
 }
 
+Mat CvUtils::gray2RGB(const cv::Mat& src){
+    Mat ret(src.size(), CV_8UC3);
+    if (src.channels() == 1)
+        cvtColor(src, ret, CV_GRAY2RGB);
+    else
+        ret = src.clone();
+    return ret;
+}
+
+Mat CvUtils::toGrayscale(const cv::Mat& src){
+    Mat ret(src.size(), CV_8UC1);
+    if (src.channels() == 1)
+        ret = src.clone();
+    else
+        cvtColor(src, ret, CV_RGB2GRAY);
+    return ret;
+}
 
 } //namespace samko
