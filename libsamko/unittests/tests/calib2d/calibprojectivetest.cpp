@@ -10,6 +10,7 @@
 
 #include <mocks/ui/mockuifactory.h>
 #include <mocks/ui/mockuigriddetector.h>
+#include "../common.h"
 
 // Grid calibration - may be allowed after InputParameters test succeedes
 
@@ -30,11 +31,6 @@ using ::testing::Return;
 using ::testing::StrictMock;
 
 /* HELPER METHODS */
-
-void ExpectPoints2fNear(const Point2f& pt1, const Point2f& pt2, float eps) {
-    EXPECT_NEAR(pt1.x, pt2.x, eps);
-	EXPECT_NEAR(pt1.y, pt2.y, eps);
-}
 
 Mat generatePreciseField() {
 	Size imSize(IMAGE_WIDTH, IMAGE_HEIGHT);

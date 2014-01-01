@@ -6,3 +6,9 @@ build/
 *.cbp
 *.layout
 *.depend
+
+# QtCreator files
+*.config
+*.creator*
+*.files
+*.includes
