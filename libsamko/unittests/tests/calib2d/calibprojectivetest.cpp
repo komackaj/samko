@@ -135,7 +135,7 @@ TEST(CalibProjective2DTest, UserInputRequired) {
     EXPECT_CALL(strictFactory, getGridDetectorProxy())
         .WillOnce(Return(strictFactory.mockDetector(GRID_COLS, GRID_ROWS, mockData)));
 
-	Mat image = imread("data/calib010.png");
+    Mat image = imread("data/calibFields/calib010.png");
 	calib.compute(image, GRID_COLS, GRID_ROWS, &strictFactory);
 
     Point2f imgPt(177.f, 242.f),
