@@ -15,10 +15,16 @@ SET(serialization_test_SOURCES
 	tests/serialization/jsontest.cpp
    )
 
+SET(targets_test_SOURCES
+        tests/targets/ellipsetargetrefinertest.cpp
+   )
+
 SET(test_SOURCES 
+    tests/common.cpp
     tests/strutilstest.cpp
 	${calib2d_test_SOURCES}
 	${serialization_test_SOURCES}
+        ${targets_test_SOURCES}
    )
 
 add_executable(samko_unittest main.cpp ${test_SOURCES})

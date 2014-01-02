@@ -24,10 +24,15 @@ set (ui_SOURCES
 	src/ui/uigriddetector.cpp
     )
 
+set (targets_SOURCES
+        src/targets/ellipsetargetrefiner.cpp
+    )
+
 SET (SOURCES 
 	${calibration2d_SOURCES}
 	${serialization_SOURCES}
 	${ui_SOURCES}
+        ${targets_SOURCES}
 	src/cvutils.cpp
 	src/stringutils.cpp
     )
