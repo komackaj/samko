@@ -3,8 +3,11 @@
 #include <libsamko/cvutils.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <numeric>
-
+#include <stdexcept>
 #include <opencv2/highgui/highgui.hpp>
+
+//#include <iostream>
+
 using namespace cv;
 using namespace std;
 
@@ -29,54 +32,45 @@ Point2f EllipseTargetRefiner::refine(const Mat& image, const Point2f& approxPt) 
     adaptiveThreshold(CvUtils::toGrayscale(lapl), img, 255, ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY, 3, 5);
     _measImg = shared_ptr<Mat>(new Mat(img));
 
-    imwrite("gray.png", *_measImg);
+    auto contour = findEllipseContour(*_measImg);
+    if (contour.size() < 5)
+        throw runtime_error("Cannot detect target marker");
 
-    auto pixels = findThresholdedPixels(*_measImg, approxPt);
-    BorderMap borderMap = generateBorder(pixels);
-    return getCenter(borderMap) + Point2f(woi.x, woi.y);
+    imwrite("work.png", *_measImg);
+
+    RotatedRect ellipse = fitEllipse(contour);
+    return ellipse.center + Point2f(woi.x, woi.y);
 }
 
-vector<Point> EllipseTargetRefiner::findThresholdedPixels(Mat& img, const Point& innerPt) const {
+vector<Point> EllipseTargetRefiner::findEllipseContour(Mat& img) const {
+    vector<vector<Point> > contours;
+    Mat hierarchy;
+    findContours(img, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE);
 
-    //find black pixels - edges by Laplacian
-    typedef Vec<uchar, 1> T;
-    vector<Point> black;
-    int id = 0;
-    int width = img.cols;
+    pair<size_t, size_t> best = make_pair(0, 0); //num points, id
+    size_t id = -1;
+    //cout << contours.size() << " contours found" << endl;
+    for (const auto& contour : contours) {
+        id++;
+        // HACK - cannot construct Vec4i from hierarchy.col(id) (4-channel matrix with 1x1 dimenstion),
+        //        so we construct vector from raw data
+        int* p = hierarchy.col(id).ptr<int>();
+        vector<int> h(p, p+4);
+      //  cout << "Hierarchy for " << id  << ": "<< Mat(h) << endl;
 
-    MatIterator_<T> akt = img.begin<T>(), end = img.end<T>();
-    for(; akt != end; ++akt, ++id) {
-        T val = *akt;
-        if (val[0] == 0) // find black pixels
-            black.emplace_back(id % width, id / width);
+        if (h[3] == -1) // skip first-level hierarchy contours - will be image border
+            continue;
+
+        int val = (id + 1) * 255 / (contours.size() + 1);
+        drawContours(img, contours, id, Scalar(val, val, val));
+        if (contour.size() > best.first){
+            best.first = contour.size();
+            best.second = id;
+        //    cout << "Contour: " << contour << endl;
+        }
     }
-    return black;
-}
 
-EllipseTargetRefiner::BorderMap EllipseTargetRefiner::generateBorder(const std::vector<Point> &pts) const {
-    BorderMap borderMap;  // maps x coordinate to minimum and maximum
-    for (Point pt : pts) {
-       minmax data = {pt.x, pt.x};
-       auto item = borderMap.insert(std::make_pair(pt.y, data));
-       if (!item.second){
-           minmax& cdata = item.first->second;
-           cdata.min = min(pt.x, cdata.min);
-           cdata.max = max(pt.x, cdata.max);
-       }
-    }
-    return borderMap;
-}
-
-Point2f EllipseTargetRefiner::getCenter(const BorderMap &borderMap) const {
-    Point2f sum(0.f,0.f);
-    int total = 0;
-    for (auto akt = borderMap.cbegin(), end = borderMap.cend(); akt!=end; ++akt) {
-        int count = akt->second.max - akt->second.min + 1;
-        total += count;
-        sum.x += count * akt->second.min + (count-1) * count / 2;
-        sum.y += akt->first * count;
-    }
-    return Point2f(sum.x / total, sum.y / total);
+    return contours[best.second];
 }
 
 const Mat* EllipseTargetRefiner::getLastMeasImage() const {

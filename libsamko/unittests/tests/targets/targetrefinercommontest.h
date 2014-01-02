@@ -5,6 +5,7 @@
 #include <libsamko/targets/targetrefiner.h>
 
 #include <vector>
+#include <stdexcept>
 #include "../common.h"
 
 #include <opencv2/highgui/highgui.hpp>
@@ -37,15 +38,22 @@ void staticTargetTest(TargetRefiner& refiner) {
     constexpr int NUM_SETS = 6;
     constexpr size_t IMAGES_PER_TARGET = 30;
 
-    vector<Point2f> pts(IMAGES_PER_TARGET);
+    vector<Point2f> pts;
 
     for (int setId = 1; setId < NUM_SETS; ++setId) {
         for (size_t i = 0; i < IMAGES_PER_TARGET; ++i) {
+            Point2f pt;
             stringstream ss;
             ss << "data/staticTarget/" << setId << "_";
             ss << setfill('0') << setw(4) << i << ".png";
             Mat img = imread(ss.rdbuf()->str());
-            pts[i] = refiner.refine(img, center);
+            try {
+                pt = refiner.refine(img, center);
+            } catch (std::runtime_error&) {
+                    cout << "Cannot detect marker in " << ss.rdbuf()->str() << endl;
+                    continue;
+            }
+            pts.push_back(pt);
         }
 
         Scalar mean, stdev;
