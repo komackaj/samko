@@ -32,4 +32,36 @@ void preciseCircleTest(TargetRefiner& refiner, int radius) {
     }
 }
 
+void staticTargetTest(TargetRefiner& refiner) {
+    Point center(10,10);
+    constexpr int NUM_SETS = 6;
+    constexpr size_t IMAGES_PER_TARGET = 30;
+
+    vector<Point2f> pts(IMAGES_PER_TARGET);
+
+    for (int setId = 1; setId < NUM_SETS; ++setId) {
+        for (size_t i = 0; i < IMAGES_PER_TARGET; ++i) {
+            stringstream ss;
+            ss << "data/staticTarget/" << setId << "_";
+            ss << setfill('0') << setw(4) << i << ".png";
+            Mat img = imread(ss.rdbuf()->str());
+            pts[i] = refiner.refine(img, center);
+        }
+
+        Scalar mean, stdev;
+        meanStdDev(pts, mean, stdev);
+        float posErr = sqrt(0.5 * stdev.dot(stdev));
+        /*
+        cout << "Set " << setId << endl;
+        cout << "Mean: " << mean[0] << ", " << mean[1] << endl;
+        cout << "Stdev: " << stdev[0] << ", " << stdev[1] << endl;
+        cout << "Position error: " << posErr << endl;
+        //cout << "Points: "<< pts << endl;
+        */
+
+        EXPECT_GT(posErr, 0.f);
+        EXPECT_LT(posErr, 0.5f);
+    }
+}
+
 #endif // TARGETREFINERCOMMONTEST_H
