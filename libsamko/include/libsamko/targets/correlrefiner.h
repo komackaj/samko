@@ -11,7 +11,7 @@ public:
 
     /**
      * @brief Standartd constructor
-     * @param windowSize    size of correlation window in pixels (should be grater than marker size)
+     * @param windowSize    correlation window size in pixels (should be grater than marker size)
      */
     CorrelRefiner(size_t windowSize);
 
@@ -19,7 +19,13 @@ public:
 
 private:
 
-    size_t _winsize;
+    size_t      _winsize;
+    cv::Point   _max;
+    cv::Mat     _lastImage;
+
+    float imgDiff(const cv::Mat& img1, const cv::Point& pinpoint1, const cv::Mat& img2, const cv::Point& pinpoint2, int winSize) const;
+    cv::Mat genSimilarityMatrix(const cv::Mat& img1, const cv::Mat& img2, int compWinSize);
+    cv::Point2f similarityMax(const cv::Mat& sim, const cv::Point& approxMax) const;
 };
 
 } //namespace
