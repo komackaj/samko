@@ -22,12 +22,17 @@ set (serialization_SOURCES
 
 set (ui_SOURCES
 	src/ui/uigriddetector.cpp
+     )
+
+set (targets_SOURCES
+        src/targets/correlrefiner.cpp
     )
 
-SET (SOURCES 
-	${calibration2d_SOURCES}
-	${serialization_SOURCES}
-	${ui_SOURCES}
+ SET (SOURCES
+        ${calibration2d_SOURCES}
+        ${serialization_SOURCES}
+        ${ui_SOURCES}
+        ${targets_SOURCES}
 	src/cvutils.cpp
 	src/stringutils.cpp
     )

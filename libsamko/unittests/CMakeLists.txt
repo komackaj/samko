@@ -13,13 +13,19 @@ SET(serialization_test_SOURCES
 	tests/serialization/common.cpp
 	tests/serialization/basetest.cpp
 	tests/serialization/jsontest.cpp
+    )
+
+SET(targets_test_SOURCES
+        tests/targets/correlrefinertest.cpp
    )
 
-SET(test_SOURCES 
-    tests/strutilstest.cpp
-	${calib2d_test_SOURCES}
-	${serialization_test_SOURCES}
-   )
+ SET(test_SOURCES
+     tests/common.cpp
+     tests/strutilstest.cpp
+        ${calib2d_test_SOURCES}
+        ${serialization_test_SOURCES}
+        ${targets_test_SOURCES}
+    )
 
 add_executable(samko_unittest main.cpp ${test_SOURCES})
 target_link_libraries(samko_unittest gmock samko)
