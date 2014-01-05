@@ -20,7 +20,7 @@ public:
 private:
 
     size_t      _winsize;
-    cv::Point   _max;
+    cv::Point   _max, _simStart;
     cv::Mat     _lastImage;
 
     float imgDiff(const cv::Mat& img1, const cv::Point& pinpoint1, const cv::Mat& img2, const cv::Point& pinpoint2, int winSize) const;
