@@ -6,3 +6,9 @@ TEST(CorrelRefinerTest, PreciseCircle) {
     CorrelRefiner refiner(2 * RADIUS * 1.2);
     preciseCircleTest(refiner, RADIUS);
 }
+
+TEST(CorrelRefinerTest, staticTargetTest) {
+    constexpr size_t RADIUS = 5;
+    CorrelRefiner refiner(RADIUS);
+    staticTargetTest(refiner);
+}
